@@ -1,0 +1,9 @@
+speechbrain
+SpeechRecognition
+fuzzywuzzy
+spacy
+python-Levenshtein
+firebase_admin
+pyaudio
+python-Levenshtein
+pyyaml

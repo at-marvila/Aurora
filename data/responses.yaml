@@ -1,0 +1,17 @@
+default_response:
+  - "Desculpe, não entendi. Pode repetir?"
+greetings:
+  - "Olá, como posso ajudar você hoje?"
+farewells:
+  - "Até logo! Se precisar de mim, basta dizer 'Oi Aurora'."
+inactive_prompt:
+  - "Você ainda está aí?"
+  - "Precisa de mais alguma coisa?"
+  - "Ainda posso ajudar com algo?"
+
+actions:
+  register_timekeeping: "Registro de ponto realizado."
+  recognize_registered_voice: "Verificando voz registrada."
+  register_client: "Registrando novo cliente."
+  deal_of_day: "A promoção do dia é..."
+  register_employee: "Iniciando o cadastro de um novo colaborador..."
