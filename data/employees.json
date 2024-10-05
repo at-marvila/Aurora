@@ -1,55 +1,9 @@
 {
     "collaborator_registration": {
         "fields": {
-            "DOB": {
-                "type": "timestamp",
-                "label": "Data de Nascimento",
-                "required": true
-            },
-            "city": {
-                "type": "string",
-                "label": "Cidade",
-                "required": true
-            },
-            "contact_number": {
-                "type": "string",
-                "label": "Número de Contato",
-                "required": true
-            },
-            "district": {
-                "type": "string",
-                "label": "Bairro",
-                "required": true
-            },
-            "document": {
-                "type": "string",
-                "label": "Documento",
-                "required": true
-            },
-            "document_type": {
-                "type": "string",
-                "label": "Tipo de Documento",
-                "required": true
-            },
-            "group": {
-                "type": "string",
-                "label": "Grupo",
-                "required": false
-            },
             "id": {
                 "type": "string",
                 "label": "ID do Colaborador",
-                "required": true,
-                "auto_generate": true
-            },
-            "last_name": {
-                "type": "string",
-                "label": "Sobrenome",
-                "required": true
-            },
-            "modication_date": {
-                "type": "timestamp",
-                "label": "Data de Modificação",
                 "required": true,
                 "auto_generate": true
             },
@@ -58,26 +12,39 @@
                 "label": "Nome",
                 "required": true
             },
-            "notification": {
-                "type": "boolean",
-                "label": "Notificação",
-                "required": true,
-                "default": true
-            },
-            "register_date": {
-                "type": "timestamp",
-                "label": "Data de Registro",
-                "required": true,
-                "auto_generate": true
-            },
-            "role": {
+            "last_name": {
                 "type": "string",
-                "label": "Função",
+                "label": "Sobrenome",
                 "required": true
             },
-            "service_company": {
+            "DOB": {
+                "type": "timestamp",
+                "label": "Data de Nascimento",
+                "required": true
+            },
+            "document_type": {
                 "type": "string",
-                "label": "Empresa Contratada",
+                "label": "Tipo de Documento",
+                "required": true
+            },
+            "document": {
+                "type": "string",
+                "label": "Documento",
+                "required": true
+            },
+            "contact_number": {
+                "type": "string",
+                "label": "Número de Contato",
+                "required": true
+            },
+            "city": {
+                "type": "string",
+                "label": "Cidade",
+                "required": true
+            },
+            "district": {
+                "type": "string",
+                "label": "Bairro",
                 "required": true
             },
             "state": {
@@ -85,16 +52,49 @@
                 "label": "Estado",
                 "required": true
             },
+            "service_company": {
+                "type": "string",
+                "label": "Empresa Contratada",
+                "required": true
+            },
+            "role": {
+                "type": "string",
+                "label": "Função",
+                "required": true
+            },
+            "supermarket_chain_code": {
+                "type": "string",
+                "label": "Código da Rede do Supermercado",
+                "required": true
+            },
+            "store_number": {
+                "type": "string",
+                "label": "Número da Loja",
+                "required": true
+            },
             "status": {
                 "type": "boolean",
                 "label": "Status",
-                "required": true,
+                "required": false,
                 "default": true
             },
-            "supermarket_id": {
-                "type": "string",
-                "label": "ID do Supermercado",
-                "required": true
+            "notification": {
+                "type": "boolean",
+                "label": "Notificação",
+                "required": false,
+                "default": true
+            },
+            "register_date": {
+                "type": "timestamp",
+                "label": "Data de Registro",
+                "required": false,
+                "auto_generate": true
+            },
+            "modification_date": {
+                "type": "timestamp",
+                "label": "Data de Modificação",
+                "required": false,
+                "auto_generate": true 
             }
         }
     }

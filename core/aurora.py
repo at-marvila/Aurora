@@ -1,30 +1,29 @@
 import os
-
 import yaml
 import logging
 import speech_recognition as srcd
-from fuzzywuzzy import fuzz  # Importa fuzzywuzzy para correspondência aproximada
+from fuzzywuzzy import fuzz
 from integrations.firebase.connections import FirebaseConnection
-from utils.firebase_utils import upload_to_firebase  # Importa função utilitária
-from utils.audio_utils import save_audio_wav  # Importa função utilitária
-from utils.logging_config import setup_logging  # Configuração de logging
+from utils.firebase_utils import upload_to_firebase
+from utils.audio_utils import save_audio_wav
+from utils.logging_config import setup_logging
 from actions.register.register_employee import RegisterEmployee
 import random
-
 from integrations.firebase.firestore_operations import FirestoreOperations
 
 # Configura o logging
 setup_logging()
 
 # Configurar a conexão com o Firebase
-firebase_conn = FirebaseConnection("C:\Users\salut\OneDrive\Documentos\Sevent\Connecion firebase", 'sevent-7197f.appspot.com')
+firebase_conn = FirebaseConnection("C:\\Sevent\\Connections\\Connecion firebase\\firebase-connection.json", 'sevent-7197f.appspot.com')
 
 class AuroraAI:
     def __init__(self):
         self.recognizer = srcd.Recognizer()
         self.intent_actions = self.load_yaml_file('../data/intent_actions.yaml')
         self.responses = self.load_yaml_file('../data/responses.yaml')
-        self.register_employee_instance = RegisterEmployee(self, firebase_conn)
+        self.supermarket_config = self.load_yaml_file('../data/configs/supermarket_config.yaml')  # Carregando a config do supermercado
+        self.register_employee_instance = RegisterEmployee(self, firebase_conn, self.supermarket_config)
         self.inactivity_counter = 0
 
     def load_yaml_file(self, relative_path):
