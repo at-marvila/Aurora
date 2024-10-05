@@ -1,28 +1,23 @@
-import sys
 import os
-
-# Definindo o caminho absoluto do projeto. Atualize conforme a estrutura do seu projeto.
-project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if project_path not in sys.path:
-    sys.path.insert(0, project_path)
 
 import yaml
 import logging
 import speech_recognition as srcd
 from fuzzywuzzy import fuzz  # Importa fuzzywuzzy para correspondência aproximada
+from integrations.firebase.connections import FirebaseConnection
 from utils.firebase_utils import upload_to_firebase  # Importa função utilitária
 from utils.audio_utils import save_audio_wav  # Importa função utilitária
 from utils.logging_config import setup_logging  # Configuração de logging
 from actions.register.register_employee import RegisterEmployee
 import random
 
-from integrations.firebase.firestore_operations import FirestoreOperations  # Configuração de conexão com Firebase
+from integrations.firebase.firestore_operations import FirestoreOperations
 
 # Configura o logging
 setup_logging()
 
 # Configurar a conexão com o Firebase
-firebase_conn = FirebaseConnection("C:\\Users\\salut\\OneDrive\\Documentos\\Sevent\\Connecion firebase\\firebase-connection.json", 'sevent-7197f.appspot.com')
+firebase_conn = FirebaseConnection("C:\Users\salut\OneDrive\Documentos\Sevent\Connecion firebase", 'sevent-7197f.appspot.com')
 
 class AuroraAI:
     def __init__(self):

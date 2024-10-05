@@ -1,7 +1,8 @@
 # core/actions/register/register_employee.py
 
-from integrations.firestore_operations import FirestoreOperations
+from integrations.firebase.firestore_operations import FirestoreOperations
 from datetime import datetime
+import json
 import tempfile
 
 class RegisterEmployee:
