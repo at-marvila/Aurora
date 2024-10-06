@@ -272,3 +272,266 @@
 2024-10-05 15:49:19,869 [WARNING] Aurora: Não consegui entender o que você disse.
 2024-10-05 15:49:39,725 [WARNING] Aurora: Não consegui entender o que você disse.
 2024-10-05 15:49:56,949 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 16:48:25,234 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 16:48:30,511 [INFO] Texto reconhecido: oi aurora
+2024-10-05 16:48:30,533 [INFO] Aurora: Olá, como posso ajudar você hoje?
+2024-10-05 16:48:35,481 [INFO] Texto reconhecido: palácio de colaboradores
+2024-10-05 16:48:35,515 [DEBUG] Texto reconhecido e normalizado: palácio de colaborador
+2024-10-05 16:48:35,515 [DEBUG] Verificando ação: employee_check_in com frases ['bom dia', 'boa tarde', 'oi aurora']
+2024-10-05 16:48:35,517 [DEBUG] Verificando ação: client_verification com frases ['verificar voz', 'verificar cadastro']
+2024-10-05 16:48:35,517 [DEBUG] Verificando ação: client_registration com frases ['cadastro cliente', 'registrar cliente', 'novo cadastro']
+2024-10-05 16:48:35,518 [DEBUG] Verificando ação: daily_promotion com frases ['qual a promoção do dia', 'promoção de hoje', 'ofertas']
+2024-10-05 16:48:35,518 [DEBUG] Verificando ação: employee_registration com frases ['cadastro de colaboradores', 'registrar colaborador', 'novo colaborador']
+2024-10-05 16:48:35,518 [WARNING] Aurora: Desculpe, não entendi. Pode repetir?
+2024-10-05 16:48:42,800 [INFO] Texto reconhecido: cadastro de colaboradores
+2024-10-05 16:48:42,879 [DEBUG] Texto reconhecido e normalizado: cadastro de colaborador
+2024-10-05 16:48:42,879 [DEBUG] Verificando ação: employee_check_in com frases ['bom dia', 'boa tarde', 'oi aurora']
+2024-10-05 16:48:42,880 [DEBUG] Verificando ação: client_verification com frases ['verificar voz', 'verificar cadastro']
+2024-10-05 16:48:42,880 [DEBUG] Verificando ação: client_registration com frases ['cadastro cliente', 'registrar cliente', 'novo cadastro']
+2024-10-05 16:48:42,880 [DEBUG] Verificando ação: daily_promotion com frases ['qual a promoção do dia', 'promoção de hoje', 'ofertas']
+2024-10-05 16:48:42,881 [DEBUG] Verificando ação: employee_registration com frases ['cadastro de colaboradores', 'registrar colaborador', 'novo colaborador']
+2024-10-05 16:48:42,881 [INFO] Executando a função 'register_employee' para a ação 'employee_registration'
+2024-10-05 16:48:42,882 [INFO] Iniciando registro do funcionário.
+2024-10-05 16:48:42,882 [INFO] Aurora: Por favor, informe Nome.
+2024-10-05 16:48:47,016 [INFO] Texto reconhecido: rafael
+2024-10-05 16:48:47,051 [INFO] Aurora: Por favor, informe Sobrenome.
+2024-10-05 16:48:51,992 [INFO] Texto reconhecido: na vila
+2024-10-05 16:48:52,018 [INFO] Aurora: Por favor, informe Data de Nascimento.
+2024-10-05 16:48:59,643 [INFO] Texto reconhecido: 29 do nove de 94
+2024-10-05 16:48:59,739 [INFO] Aurora: Por favor, informe Tipo de Documento.
+2024-10-05 16:49:08,453 [INFO] Texto reconhecido: cpf
+2024-10-05 16:49:08,538 [INFO] Aurora: Por favor, informe Documento.
+2024-10-05 16:49:17,225 [INFO] Texto reconhecido: 071670 41963
+2024-10-05 16:49:17,317 [INFO] Aurora: Por favor, informe NÃºmero de Contato.
+2024-10-05 16:49:30,163 [INFO] Texto reconhecido: 4799220 5458
+2024-10-05 16:49:30,262 [INFO] Aurora: Por favor, informe Cidade.
+2024-10-05 16:49:36,337 [INFO] Texto reconhecido: itajaí
+2024-10-05 16:49:36,372 [INFO] Aurora: Por favor, informe Bairro.
+2024-10-05 16:49:40,931 [INFO] Texto reconhecido: multa
+2024-10-05 16:49:40,957 [INFO] Aurora: Por favor, informe Estado.
+2024-10-05 16:49:48,510 [INFO] Texto reconhecido: santa catarina
+2024-10-05 16:49:48,593 [INFO] Aurora: Por favor, informe Empresa Contratada.
+2024-10-05 16:49:55,309 [INFO] Texto reconhecido: três corações
+2024-10-05 16:49:55,343 [INFO] Aurora: Por favor, informe FunÃ§Ã£o.
+2024-10-05 16:50:04,193 [INFO] Texto reconhecido: administrador
+2024-10-05 16:50:04,269 [INFO] Aurora: Por favor, informe CÃ³digo da Rede do Supermercado.
+2024-10-05 16:50:11,741 [INFO] Texto reconhecido: fl
+2024-10-05 16:50:11,823 [INFO] Aurora: Por favor, informe NÃºmero da Loja.
+2024-10-05 16:50:18,839 [INFO] Texto reconhecido: 15
+2024-10-05 16:50:18,860 [INFO] Salvando o áudio para o documento 071670 41963.
+2024-10-05 16:50:18,864 [INFO] Áudio salvo com sucesso em C:\Users\salut\AppData\Local\Temp\071670 41963.wav
+2024-10-05 16:50:18,951 [DEBUG] Converted retries value: 3 -> Retry(total=3, connect=None, read=None, redirect=None, status=None)
+2024-10-05 16:50:18,963 [DEBUG] Making request: POST https://oauth2.googleapis.com/token
+2024-10-05 16:50:18,967 [DEBUG] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+2024-10-05 16:50:19,416 [DEBUG] https://oauth2.googleapis.com:443 "POST /token HTTP/11" 200 None
+2024-10-05 16:50:19,420 [DEBUG] Starting new HTTPS connection (1): storage.googleapis.com:443
+2024-10-05 16:50:22,934 [DEBUG] https://storage.googleapis.com:443 "POST /upload/storage/v1/b/sevent-7197f.appspot.com/o?uploadType=multipart HTTP/11" 200 885
+2024-10-05 16:50:22,938 [INFO] Upload do arquivo C:\Users\salut\AppData\Local\Temp\071670 41963.wav para Bistek/Employees/071670 41963.wav concluído com sucesso.
+2024-10-05 16:50:23,710 [INFO] Documento adicionado/atualizado com sucesso: rafael
+2024-10-05 16:50:23,710 [INFO] Aurora: Cadastro concluído e enviado ao Firestore. Áudio salvo como 071670 41963.wav
+2024-10-05 16:58:24,896 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 16:58:31,197 [INFO] Texto reconhecido: oi aurora
+2024-10-05 16:58:31,234 [INFO] Aurora: Olá, como posso ajudar você hoje?
+2024-10-05 16:58:37,444 [INFO] Texto reconhecido: cadastro de colaboradores
+2024-10-05 16:58:37,552 [DEBUG] Texto reconhecido e normalizado: cadastro de colaborador
+2024-10-05 16:58:37,552 [DEBUG] Verificando ação: employee_check_in com frases ['bom dia', 'boa tarde', 'oi aurora']
+2024-10-05 16:58:37,554 [DEBUG] Verificando ação: client_verification com frases ['verificar voz', 'verificar cadastro']
+2024-10-05 16:58:37,554 [DEBUG] Verificando ação: client_registration com frases ['cadastro cliente', 'registrar cliente', 'novo cadastro']
+2024-10-05 16:58:37,555 [DEBUG] Verificando ação: daily_promotion com frases ['qual a promoção do dia', 'promoção de hoje', 'ofertas']
+2024-10-05 16:58:37,555 [DEBUG] Verificando ação: employee_registration com frases ['cadastro de colaboradores', 'registrar colaborador', 'novo colaborador']
+2024-10-05 16:58:37,556 [INFO] Executando a função 'register_employee' para a ação 'employee_registration'
+2024-10-05 16:58:37,558 [INFO] Iniciando registro do funcionário.
+2024-10-05 16:58:37,559 [INFO] Aurora: Por favor, informe Nome.
+2024-10-05 16:58:41,695 [INFO] Texto reconhecido: rafael
+2024-10-05 16:58:41,747 [INFO] Aurora: Por favor, informe Sobrenome.
+2024-10-05 16:58:46,895 [INFO] Texto reconhecido: na vila
+2024-10-05 16:58:46,949 [INFO] Aurora: Por favor, informe Data de Nascimento.
+2024-10-05 16:58:54,876 [INFO] Texto reconhecido: 299 de 94
+2024-10-05 16:58:54,966 [INFO] Aurora: Por favor, informe Tipo de Documento.
+2024-10-05 16:59:01,377 [INFO] Texto reconhecido: cpf
+2024-10-05 16:59:01,407 [INFO] Aurora: Por favor, informe Documento.
+2024-10-05 16:59:11,307 [INFO] Texto reconhecido: 071670 41963
+2024-10-05 16:59:11,400 [INFO] Aurora: Por favor, informe NÃºmero de Contato.
+2024-10-05 16:59:20,882 [INFO] Texto reconhecido: 4799220 5458
+2024-10-05 16:59:20,978 [INFO] Aurora: Por favor, informe Bairro.
+2024-10-05 16:59:27,431 [INFO] Texto reconhecido: jardim liberdade
+2024-10-05 16:59:27,467 [INFO] Aurora: Por favor, informe Estado.
+2024-10-05 16:59:34,699 [INFO] Texto reconhecido: minas gerais
+2024-10-05 16:59:34,778 [INFO] Aurora: Por favor, informe Empresa Contratada.
+2024-10-05 16:59:45,229 [INFO] Texto reconhecido: três corações
+2024-10-05 16:59:45,303 [INFO] Aurora: Por favor, informe FunÃ§Ã£o.
+2024-10-05 16:59:52,432 [INFO] Texto reconhecido: administrador
+2024-10-05 16:59:52,468 [INFO] Salvando o áudio para o documento 071670 41963.
+2024-10-05 16:59:52,471 [INFO] Áudio salvo com sucesso em C:\Users\salut\AppData\Local\Temp\071670 41963.wav
+2024-10-05 16:59:52,502 [DEBUG] Converted retries value: 3 -> Retry(total=3, connect=None, read=None, redirect=None, status=None)
+2024-10-05 16:59:52,513 [DEBUG] Making request: POST https://oauth2.googleapis.com/token
+2024-10-05 16:59:52,515 [DEBUG] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+2024-10-05 16:59:53,032 [DEBUG] https://oauth2.googleapis.com:443 "POST /token HTTP/11" 200 None
+2024-10-05 16:59:53,036 [DEBUG] Starting new HTTPS connection (1): storage.googleapis.com:443
+2024-10-05 16:59:55,586 [DEBUG] https://storage.googleapis.com:443 "POST /upload/storage/v1/b/sevent-7197f.appspot.com/o?uploadType=multipart HTTP/11" 200 885
+2024-10-05 16:59:55,589 [INFO] Upload do arquivo C:\Users\salut\AppData\Local\Temp\071670 41963.wav para Bistek/Employees/071670 41963.wav concluído com sucesso.
+2024-10-05 16:59:56,300 [INFO] Documento adicionado/atualizado com sucesso: rafael
+2024-10-05 16:59:56,301 [INFO] Aurora: Cadastro concluído e enviado ao Firestore. Áudio salvo como 071670 41963.wav
+2024-10-05 22:04:42,826 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:04:47,588 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:04:56,759 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:05:02,353 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:05:07,364 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:05:20,687 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:05:26,299 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:05:29,617 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:05:33,138 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:05:37,582 [INFO] Texto reconhecido: aconteceu alguma coisa
+2024-10-05 22:05:41,900 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:07:50,548 [INFO] Texto reconhecido: oi aurora
+2024-10-05 22:07:50,597 [INFO] Aurora: Olá, como posso ajudar você hoje?
+2024-10-05 22:07:56,221 [INFO] Texto reconhecido: cadastro de colaboradores
+2024-10-05 22:07:56,267 [DEBUG] Texto reconhecido e normalizado: cadastro de colaborador
+2024-10-05 22:07:56,268 [DEBUG] Verificando ação: employee_check_in com frases ['bom dia', 'boa tarde', 'oi aurora']
+2024-10-05 22:07:56,270 [DEBUG] Verificando ação: client_verification com frases ['verificar voz', 'verificar cadastro']
+2024-10-05 22:07:56,271 [DEBUG] Verificando ação: client_registration com frases ['cadastro cliente', 'registrar cliente', 'novo cadastro']
+2024-10-05 22:07:56,272 [DEBUG] Verificando ação: daily_promotion com frases ['qual a promoção do dia', 'promoção de hoje', 'ofertas']
+2024-10-05 22:07:56,272 [DEBUG] Verificando ação: employee_registration com frases ['cadastro de colaboradores', 'registrar colaborador', 'novo colaborador']
+2024-10-05 22:07:56,273 [INFO] Executando a função 'register_employee' para a ação 'employee_registration'
+2024-10-05 22:07:56,276 [INFO] Iniciando registro do funcionário.
+2024-10-05 22:07:56,277 [INFO] Aurora: Por favor, informe Nome.
+2024-10-05 22:08:01,857 [INFO] Texto reconhecido: rafael
+2024-10-05 22:08:01,904 [INFO] Aurora: Por favor, informe Sobrenome.
+2024-10-05 22:08:06,637 [INFO] Texto reconhecido: bar vila
+2024-10-05 22:08:06,689 [INFO] Aurora: Por favor, informe Data de Nascimento.
+2024-10-05 22:08:13,941 [INFO] Texto reconhecido: 29 do nove de 94
+2024-10-05 22:08:14,061 [INFO] Aurora: Por favor, informe Tipo de Documento.
+2024-10-05 22:08:24,327 [INFO] Texto reconhecido: 071670 41963
+2024-10-05 22:08:24,454 [INFO] Aurora: Por favor, informe Documento.
+2024-10-05 22:08:29,923 [INFO] Texto reconhecido: cpf
+2024-10-05 22:08:29,967 [INFO] Aurora: Por favor, informe NÃºmero de Contato.
+2024-10-05 22:08:39,796 [INFO] Texto reconhecido: 4799220 5458
+2024-10-05 22:08:39,920 [INFO] Aurora: Por favor, informe Bairro.
+2024-10-05 22:08:47,536 [INFO] Texto reconhecido: murta
+2024-10-05 22:08:47,633 [INFO] Aurora: Por favor, informe Estado.
+2024-10-05 22:08:52,910 [INFO] Texto reconhecido: santa catarina
+2024-10-05 22:08:52,968 [INFO] Aurora: Por favor, informe Empresa Contratada.
+2024-10-05 22:08:59,467 [INFO] Texto reconhecido: três corações
+2024-10-05 22:08:59,584 [INFO] Aurora: Por favor, informe FunÃ§Ã£o.
+2024-10-05 22:09:05,480 [INFO] Texto reconhecido: administrador
+2024-10-05 22:09:05,509 [INFO] Salvando o áudio para o documento cpf.
+2024-10-05 22:09:05,523 [INFO] Áudio salvo com sucesso em C:\Users\salut\AppData\Local\Temp\cpf.wav
+2024-10-05 22:09:05,648 [DEBUG] Converted retries value: 3 -> Retry(total=3, connect=None, read=None, redirect=None, status=None)
+2024-10-05 22:09:05,664 [DEBUG] Making request: POST https://oauth2.googleapis.com/token
+2024-10-05 22:09:05,668 [DEBUG] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+2024-10-05 22:09:06,080 [DEBUG] https://oauth2.googleapis.com:443 "POST /token HTTP/11" 200 None
+2024-10-05 22:09:06,084 [DEBUG] Starting new HTTPS connection (1): storage.googleapis.com:443
+2024-10-05 22:09:08,712 [DEBUG] https://storage.googleapis.com:443 "POST /upload/storage/v1/b/sevent-7197f.appspot.com/o?uploadType=multipart HTTP/11" 200 845
+2024-10-05 22:09:08,715 [INFO] Upload do arquivo C:\Users\salut\AppData\Local\Temp\cpf.wav para Bistek/Employees/cpf.wav concluído com sucesso.
+2024-10-05 22:09:10,005 [INFO] Documento adicionado/atualizado com sucesso: rafael
+2024-10-05 22:09:10,005 [INFO] Aurora: Cadastro concluído e enviado ao Firestore. Áudio salvo como cpf.wav
+2024-10-05 22:09:14,185 [WARNING] Aurora: Não consegui entender o que você disse.
+2024-10-05 22:09:20,648 [INFO] Texto reconhecido: aurora pôr do sol
+2024-10-05 22:09:20,767 [DEBUG] Texto reconhecido e normalizado: aurora pôr do sol
+2024-10-05 22:09:20,768 [DEBUG] Verificando ação: employee_check_in com frases ['bom dia', 'boa tarde', 'oi aurora']
+2024-10-05 22:09:20,768 [DEBUG] Verificando ação: client_verification com frases ['verificar voz', 'verificar cadastro']
+2024-10-05 22:09:20,769 [DEBUG] Verificando ação: client_registration com frases ['cadastro cliente', 'registrar cliente', 'novo cadastro']
+2024-10-05 22:09:20,769 [DEBUG] Verificando ação: daily_promotion com frases ['qual a promoção do dia', 'promoção de hoje', 'ofertas']
+2024-10-05 22:09:20,770 [DEBUG] Verificando ação: employee_registration com frases ['cadastro de colaboradores', 'registrar colaborador', 'novo colaborador']
+2024-10-05 22:09:20,770 [WARNING] Aurora: Desculpe, não entendi. Pode repetir?
+2024-10-05 22:09:27,557 [INFO] Texto reconhecido: aurora pôr do sol
+2024-10-05 22:09:27,603 [DEBUG] Texto reconhecido e normalizado: aurora pôr do sol
+2024-10-05 22:09:27,604 [DEBUG] Verificando ação: employee_check_in com frases ['bom dia', 'boa tarde', 'oi aurora']
+2024-10-05 22:09:27,604 [DEBUG] Verificando ação: client_verification com frases ['verificar voz', 'verificar cadastro']
+2024-10-05 22:09:27,605 [DEBUG] Verificando ação: client_registration com frases ['cadastro cliente', 'registrar cliente', 'novo cadastro']
+2024-10-05 22:09:27,607 [DEBUG] Verificando ação: daily_promotion com frases ['qual a promoção do dia', 'promoção de hoje', 'ofertas']
+2024-10-05 22:09:27,608 [DEBUG] Verificando ação: employee_registration com frases ['cadastro de colaboradores', 'registrar colaborador', 'novo colaborador']
+2024-10-05 22:09:27,609 [WARNING] Aurora: Desculpe, não entendi. Pode repetir?
+2024-10-05 22:13:14,183 [INFO] Texto reconhecido: oi aurora
+2024-10-05 22:13:14,217 [INFO] Aurora: Olá, como posso ajudar você hoje?
+2024-10-05 22:13:20,974 [INFO] Texto reconhecido: cadastro de colaboradores
+2024-10-05 22:13:21,079 [DEBUG] Texto reconhecido e normalizado: cadastro de colaborador
+2024-10-05 22:13:21,080 [DEBUG] Verificando ação: employee_check_in com frases ['bom dia', 'boa tarde', 'oi aurora']
+2024-10-05 22:13:21,082 [DEBUG] Verificando ação: client_verification com frases ['verificar voz', 'verificar cadastro']
+2024-10-05 22:13:21,082 [DEBUG] Verificando ação: client_registration com frases ['cadastro cliente', 'registrar cliente', 'novo cadastro']
+2024-10-05 22:13:21,083 [DEBUG] Verificando ação: daily_promotion com frases ['qual a promoção do dia', 'promoção de hoje', 'ofertas']
+2024-10-05 22:13:21,083 [DEBUG] Verificando ação: employee_registration com frases ['cadastro de colaboradores', 'registrar colaborador', 'novo colaborador']
+2024-10-05 22:13:21,084 [INFO] Executando a função 'register_employee' para a ação 'employee_registration'
+2024-10-05 22:13:21,088 [INFO] Iniciando registro do funcionário.
+2024-10-05 22:13:21,089 [INFO] Aurora: Por favor, informe Nome.
+2024-10-05 22:13:25,942 [INFO] Texto reconhecido: rafael
+2024-10-05 22:13:25,990 [INFO] Aurora: Por favor, informe Sobrenome.
+2024-10-05 22:13:31,254 [INFO] Texto reconhecido: marvila
+2024-10-05 22:13:31,291 [INFO] Aurora: Por favor, informe Data de Nascimento.
+2024-10-05 22:13:39,418 [INFO] Texto reconhecido: 29 de setembro de 1994
+2024-10-05 22:13:39,544 [INFO] Aurora: Por favor, informe Tipo de Documento.
+2024-10-05 22:13:45,140 [INFO] Texto reconhecido: cpf
+2024-10-05 22:13:45,172 [INFO] Aurora: Por favor, informe Documento.
+2024-10-05 22:13:56,952 [INFO] Texto reconhecido: 071670 41963
+2024-10-05 22:13:57,070 [INFO] Aurora: Por favor, informe NÃºmero de Contato.
+2024-10-05 22:14:08,730 [INFO] Texto reconhecido: 4799220 5458
+2024-10-05 22:14:08,856 [INFO] Aurora: Por favor, informe Bairro.
+2024-10-05 22:14:15,998 [INFO] Texto reconhecido: jardim liberdade
+2024-10-05 22:14:16,060 [INFO] Aurora: Por favor, informe Estado.
+2024-10-05 22:14:22,155 [INFO] Texto reconhecido: minas gerais
+2024-10-05 22:14:22,267 [INFO] Aurora: Por favor, informe Empresa Contratada.
+2024-10-05 22:14:28,338 [INFO] Texto reconhecido: sadia
+2024-10-05 22:14:28,384 [INFO] Aurora: Por favor, informe FunÃ§Ã£o.
+2024-10-05 22:14:34,347 [INFO] Texto reconhecido: engenheiro
+2024-10-05 22:14:34,381 [INFO] Salvando o áudio para o documento 071670 41963.
+2024-10-05 22:14:34,388 [INFO] Áudio salvo com sucesso em C:\Users\salut\AppData\Local\Temp\071670 41963.wav
+2024-10-05 22:14:34,472 [DEBUG] Converted retries value: 3 -> Retry(total=3, connect=None, read=None, redirect=None, status=None)
+2024-10-05 22:14:34,489 [DEBUG] Making request: POST https://oauth2.googleapis.com/token
+2024-10-05 22:14:34,498 [DEBUG] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+2024-10-05 22:14:34,876 [DEBUG] https://oauth2.googleapis.com:443 "POST /token HTTP/11" 200 None
+2024-10-05 22:14:34,882 [DEBUG] Starting new HTTPS connection (1): storage.googleapis.com:443
+2024-10-05 22:14:37,449 [DEBUG] https://storage.googleapis.com:443 "POST /upload/storage/v1/b/sevent-7197f.appspot.com/o?uploadType=multipart HTTP/11" 200 885
+2024-10-05 22:14:37,453 [INFO] Upload do arquivo C:\Users\salut\AppData\Local\Temp\071670 41963.wav para Bistek/Employees/071670 41963.wav concluído com sucesso.
+2024-10-05 22:14:38,701 [INFO] Documento adicionado/atualizado com sucesso: rafael
+2024-10-05 22:14:38,702 [INFO] Aurora: Cadastro concluído e enviado ao Firestore. Áudio salvo como 071670 41963.wav
+2024-10-05 22:14:45,837 [INFO] Texto reconhecido: aurora desligar
+2024-10-05 22:14:45,953 [DEBUG] Texto reconhecido e normalizado: aurora desligar
+2024-10-05 22:14:45,953 [DEBUG] Verificando ação: employee_check_in com frases ['bom dia', 'boa tarde', 'oi aurora']
+2024-10-05 22:14:45,955 [DEBUG] Verificando ação: client_verification com frases ['verificar voz', 'verificar cadastro']
+2024-10-05 22:14:45,955 [DEBUG] Verificando ação: client_registration com frases ['cadastro cliente', 'registrar cliente', 'novo cadastro']
+2024-10-05 22:14:45,955 [DEBUG] Verificando ação: daily_promotion com frases ['qual a promoção do dia', 'promoção de hoje', 'ofertas']
+2024-10-05 22:14:45,955 [DEBUG] Verificando ação: employee_registration com frases ['cadastro de colaboradores', 'registrar colaborador', 'novo colaborador']
+2024-10-05 22:14:45,957 [WARNING] Aurora: Desculpe, não entendi. Pode repetir?
+2024-10-05 22:26:38,878 [INFO] Texto reconhecido: oi aurora
+2024-10-05 22:26:38,951 [INFO] Aurora: Olá, como posso ajudar você hoje?
+2024-10-05 22:26:44,433 [INFO] Texto reconhecido: cadastro de colaboradores
+2024-10-05 22:26:44,480 [DEBUG] Texto reconhecido e normalizado: cadastro de colaborador
+2024-10-05 22:26:44,481 [DEBUG] Verificando ação: employee_check_in com frases ['bom dia', 'boa tarde', 'oi aurora']
+2024-10-05 22:26:44,488 [DEBUG] Verificando ação: client_verification com frases ['verificar voz', 'verificar cadastro']
+2024-10-05 22:26:44,489 [DEBUG] Verificando ação: client_registration com frases ['cadastro cliente', 'registrar cliente', 'novo cadastro']
+2024-10-05 22:26:44,490 [DEBUG] Verificando ação: daily_promotion com frases ['qual a promoção do dia', 'promoção de hoje', 'ofertas']
+2024-10-05 22:26:44,491 [DEBUG] Verificando ação: employee_registration com frases ['cadastro de colaboradores', 'registrar colaborador', 'novo colaborador']
+2024-10-05 22:26:44,491 [INFO] Executando a função 'register_employee' para a ação 'employee_registration'
+2024-10-05 22:26:44,496 [INFO] Iniciando registro do funcionário.
+2024-10-05 22:26:44,496 [INFO] Aurora: Por favor, informe Nome.
+2024-10-05 22:26:48,881 [INFO] Texto reconhecido: rafael
+2024-10-05 22:26:48,911 [INFO] Aurora: Por favor, informe Sobrenome.
+2024-10-05 22:26:53,591 [INFO] Texto reconhecido: bar vila
+2024-10-05 22:26:53,635 [INFO] Aurora: Por favor, informe Data de Nascimento.
+2024-10-05 22:27:03,369 [INFO] Texto reconhecido: 29 de setembro de 1994
+2024-10-05 22:27:03,516 [INFO] Aurora: Por favor, informe Tipo de Documento.
+2024-10-05 22:27:10,519 [INFO] Texto reconhecido: cpf
+2024-10-05 22:27:10,557 [INFO] Aurora: Por favor, informe Documento.
+2024-10-05 22:27:20,233 [INFO] Texto reconhecido: 071670419 63
+2024-10-05 22:27:20,377 [INFO] Aurora: Por favor, informe NÃºmero de Contato.
+2024-10-05 22:27:36,596 [INFO] Texto reconhecido: 4799220 5458
+2024-10-05 22:27:36,740 [INFO] Aurora: Por favor, informe Bairro.
+2024-10-05 22:27:44,489 [INFO] Texto reconhecido: jardim liberdade
+2024-10-05 22:27:44,621 [INFO] Aurora: Por favor, informe Estado.
+2024-10-05 22:27:57,480 [INFO] Texto reconhecido: minas gerais
+2024-10-05 22:27:57,608 [INFO] Aurora: Por favor, informe Empresa Contratada.
+2024-10-05 22:28:10,490 [INFO] Texto reconhecido: sadia
+2024-10-05 22:28:10,618 [INFO] Aurora: Por favor, informe FunÃ§Ã£o.
+2024-10-05 22:28:16,632 [INFO] Texto reconhecido: engenheiro
+2024-10-05 22:28:16,693 [INFO] Salvando o áudio para o documento 07167041963.
+2024-10-05 22:28:16,701 [INFO] Áudio salvo com sucesso em C:\Users\salut\AppData\Local\Temp\07167041963.wav
+2024-10-05 22:28:16,805 [DEBUG] Converted retries value: 3 -> Retry(total=3, connect=None, read=None, redirect=None, status=None)
+2024-10-05 22:28:16,840 [DEBUG] Making request: POST https://oauth2.googleapis.com/token
+2024-10-05 22:28:16,870 [DEBUG] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+2024-10-05 22:28:17,254 [DEBUG] https://oauth2.googleapis.com:443 "POST /token HTTP/11" 200 None
+2024-10-05 22:28:17,260 [DEBUG] Starting new HTTPS connection (1): storage.googleapis.com:443
+2024-10-05 22:28:19,242 [DEBUG] https://storage.googleapis.com:443 "POST /upload/storage/v1/b/sevent-7197f.appspot.com/o?uploadType=multipart HTTP/11" 200 877
+2024-10-05 22:28:19,248 [INFO] Upload do arquivo C:\Users\salut\AppData\Local\Temp\07167041963.wav para Bistek/Employees/07167041963.wav concluído com sucesso.
+2024-10-05 22:28:20,611 [INFO] Documento adicionado/atualizado com sucesso: rafael
+2024-10-05 22:28:20,611 [INFO] Aurora: Cadastro concluído e enviado ao Firestore. Áudio salvo como 07167041963.wav
+2024-10-05 22:28:24,474 [WARNING] Aurora: Não consegui entender o que você disse.

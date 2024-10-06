@@ -5,7 +5,11 @@ import json
 import tempfile
 import os
 import uuid
-from utils.generate_supermarket_id import generate_supermarket_id
+from utils.supermarket.generate_supermarket_id import generate_supermarket_id
+from validators.date_validator import format_date  # Corrigido para apontar para o local correto do format_date
+from validators.data_utils import format_document  # Corrigido para apontar para o local correto do format_document
+from utils.audio.audio_utils import save_audio_wav
+from utils.firebase.firebase_utils import upload_to_firebase
 
 class RegisterEmployee:
     def __init__(self, aurora_instance, firebase_conn, supermarket_config):
@@ -47,7 +51,8 @@ class RegisterEmployee:
             "modification_date": datetime.now().isoformat(),  # Data de modificação gerada automaticamente
             "register_date": datetime.now().isoformat(),      # Data de registro gerada automaticamente
             "status": True,                                   # Status gerado automaticamente como ativo (True)
-            "notification": True                              # Notificação padrão como habilitada (True)
+            "notification": True,                             # Notificação padrão como habilitada (True)
+            "supermarket_id": generate_supermarket_id(self.supermarket_chain_code, self.city, None, self.store_number)  # Gerando o ID automaticamente
         }
 
         order_of_questions = employee_template['collaborator_registration']['fields']
@@ -55,12 +60,10 @@ class RegisterEmployee:
 
         self.logger.info("Iniciando registro do funcionário.")
 
-        city_code = self.city
-        district_code = None
-        store_number = self.store_number
-
+        # Remover perguntas desnecessárias
         for field, attributes in order_of_questions.items():
-            if field in ["id", "register_date", "modification_date", "status", "notification"]:
+            # Ignorar campos automáticos e os que já estão no arquivo de configuração
+            if field in ["id", "register_date", "modification_date", "status", "notification", "supermarket_id", "supermarket_chain_code", "store_number", "city"]:
                 continue
 
             self.logger.info(f"Aurora: Por favor, informe {attributes['label']}.")
@@ -68,35 +71,33 @@ class RegisterEmployee:
 
             if response:
                 self.logger.debug(f"Recebido dado para o campo {field}: {response}")
-                if attributes['type'] == 'timestamp':
+                
+                # Tratamento para os campos de data e documento
+                if field == "date_of_birth":
+                    # Utiliza a função de limpeza de data
+                    employee_data[field] = format_date(response)
+                elif field == "document":
+                    # Utiliza a função de limpeza de número de documento
+                    document_number = format_document(response)
+                    employee_data[field] = document_number
+                elif attributes['type'] == 'timestamp':
                     employee_data[field] = datetime.now().isoformat()
                 elif attributes['type'] == 'boolean':
                     employee_data[field] = response.lower() in ['sim', 'yes', 'true']
                 else:
                     employee_data[field] = response
+                
                 combined_audio_data.append(audio.get_wav_data())
-
-                if field == "district":
-                    district_code = response
-                if field == "document":
-                    document_number = response
             else:
                 self.logger.warning(f"Aurora: Campo {attributes['label']} não foi preenchido corretamente.")
                 return
 
-        if city_code and district_code and store_number:
-            employee_data['supermarket_id'] = generate_supermarket_id(self.supermarket_chain_code, city_code, district_code, store_number)
-        else:
-            self.logger.error("Aurora: Não foi possível gerar o supermarket_id, informações faltando.")
-            return
-
         if document_number:
             self.logger.info(f"Salvando o áudio para o documento {document_number}.")
             final_audio_path = os.path.join(folder_path, f"{document_number}.wav")
-            self.aurora.save_audio(b''.join(combined_audio_data), final_audio_path)
-            self.aurora.upload_audio(final_audio_path, f"Bistek/Employees/{document_number}.wav")
+            save_audio_wav(b''.join(combined_audio_data), final_audio_path)
+            upload_to_firebase(final_audio_path, f"Bistek/Employees/{document_number}.wav")
 
-            employee_data['document'] = document_number
             self.firestore_ops.upsert_employee(employee_data)
             self.logger.info(f"Aurora: Cadastro concluído e enviado ao Firestore. Áudio salvo como {document_number}.wav")
         else:

@@ -4,9 +4,9 @@ import logging
 import speech_recognition as srcd
 from fuzzywuzzy import fuzz
 from integrations.firebase.connections import FirebaseConnection
-from utils.firebase_utils import upload_to_firebase
-from utils.audio_utils import save_audio_wav
-from utils.logging_config import setup_logging
+from utils.firebase.firebase_utils import upload_to_firebase
+from utils.audio.audio_utils import save_audio_wav
+from utils.logging.logging_config import setup_logging
 from actions.register.register_employee import RegisterEmployee
 import random
 from integrations.firebase.firestore_operations import FirestoreOperations
@@ -39,7 +39,7 @@ class AuroraAI:
         if category in self.responses:
             return random.choice(self.responses[category])
         return self.responses['default_response'][0]
-
+    
     def normalize_text(self, text):
         """Normaliza o texto reconhecido"""
         return text.lower().replace("colaboradores", "colaborador").replace("clientes", "cliente").replace("promoções", "promoção")
@@ -84,7 +84,7 @@ class AuroraAI:
                     if "oi aurora" in recognized_text:
                         self.handle_greeting()
                         self.interaction_loop()  # Entra no loop de interação
-                    elif "aurora, por do sol" in recognized_text:
+                    elif "aurora desligar" in recognized_text:
                         print(self.get_response('farewells'))
                         break  # Sai da aplicação se o comando de encerramento for dado
             except srcd.WaitTimeoutError:
