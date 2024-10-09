@@ -1,4 +1,5 @@
-# integrations/firestore_operations.py
+import os
+os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
 
 from datetime import datetime
 import logging
@@ -7,10 +8,19 @@ class FirestoreOperations:
     def __init__(self, firebase_conn):
         self.db = firebase_conn.get_firestore_client()
 
-    def upsert_employee(self, employee_data):
-        """Adicionar ou atualizar um colaborador"""
+    def upsert_employee(self, employee_data, document_id=None):
+        """
+        Adicionar ou atualizar um colaborador.
+        Se 'document_id' for fornecido, o documento será salvo com esse ID.
+        Caso contrário, ele usará o campo 'document' como ID.
+        """
         try:
-            doc_ref = self.db.collection('employees').document(employee_data['document'])
+            # Usar o document_id (vetor de voz) como ID, se fornecido
+            if document_id:
+                doc_ref = self.db.collection('employees').document(document_id)
+            else:
+                doc_ref = self.db.collection('employees').document(employee_data['document'])
+
             doc_ref.set(employee_data)
             logging.info(f"Documento adicionado/atualizado com sucesso: {employee_data['name']}")
         except Exception as e:

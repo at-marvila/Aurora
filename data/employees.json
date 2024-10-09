@@ -1,101 +1,79 @@
 {
-    "collaborator_registration": {
-        "fields": {
-            "id": {
-                "type": "string",
-                "label": "ID do Colaborador",
-                "required": true,
-                "auto_generate": true
-            },
-            "name": {
-                "type": "string",
-                "label": "Nome",
-                "required": true
-            },
-            "last_name": {
-                "type": "string",
-                "label": "Sobrenome",
-                "required": true
-            },
-            "DOB": {
-                "type": "timestamp",
-                "label": "Data de Nascimento",
-                "required": true
-            },
-            "document_type": {
-                "type": "string",
-                "label": "Tipo de Documento",
-                "required": true
-            },
-            "document": {
-                "type": "string",
-                "label": "Documento",
-                "required": true
-            },
-            "contact_number": {
-                "type": "string",
-                "label": "Número de Contato",
-                "required": true
-            },
-            "city": {
-                "type": "string",
-                "label": "Cidade",
-                "required": true
-            },
-            "district": {
-                "type": "string",
-                "label": "Bairro",
-                "required": true
-            },
-            "state": {
-                "type": "string",
-                "label": "Estado",
-                "required": true
-            },
-            "service_company": {
-                "type": "string",
-                "label": "Empresa Contratada",
-                "required": true
-            },
-            "role": {
-                "type": "string",
-                "label": "Função",
-                "required": true
-            },
-            "supermarket_chain_code": {
-                "type": "string",
-                "label": "Código da Rede do Supermercado",
-                "required": true
-            },
-            "store_number": {
-                "type": "string",
-                "label": "Número da Loja",
-                "required": true
-            },
-            "status": {
-                "type": "boolean",
-                "label": "Status",
-                "required": false,
-                "default": true
-            },
-            "notification": {
-                "type": "boolean",
-                "label": "Notificação",
-                "required": false,
-                "default": true
-            },
-            "register_date": {
-                "type": "timestamp",
-                "label": "Data de Registro",
-                "required": false,
-                "auto_generate": true
-            },
-            "modification_date": {
-                "type": "timestamp",
-                "label": "Data de Modificação",
-                "required": false,
-                "auto_generate": true 
-            }
-        }
+  "collaborator_registration": {
+    "fields": {
+      "id": {
+        "label": "ID do Colaborador",
+        "type": "uuid",
+        "required": true
+      },
+      "name": {
+        "label": "Nome do Colaborador",
+        "type": "string",
+        "required": true
+      },
+      "last_name": {
+        "label": "Sobrenome do Colaborador",
+        "type": "string",
+        "required": true
+      },
+      "document": {
+        "label": "Número do Documento (CPF)",
+        "type": "string",
+        "required": true
+      },
+      "dob": {
+        "label": "Data de Nascimento",
+        "type": "timestamp",
+        "required": true
+      },
+      "role": {
+        "label": "Função",
+        "type": "string",
+        "required": true
+      },
+      "register_date": {
+        "label": "Data de Registro",
+        "type": "timestamp",
+        "required": true,
+        "auto_generated": true
+      },
+      "created_by": {
+        "label": "Criado Por",
+        "type": "string",
+        "required": true,
+        "auto_generated": false,
+        "description": "ID ou nome de quem criou o registro"
+      },
+      "updated_by": {
+        "label": "Atualizado Por",
+        "type": "string",
+        "required": false,
+        "auto_generated": false,
+        "description": "ID ou nome de quem atualizou o registro pela última vez"
+      },
+      "status": {
+        "label": "Status",
+        "type": "boolean",
+        "required": true,
+        "default": true
+      },
+      "notification": {
+        "label": "Notificação Habilitada",
+        "type": "boolean",
+        "required": false,
+        "default": true
+      },
+      "supermarket_id": {
+        "label": "ID do Supermercado",
+        "type": "string",
+        "required": true,
+        "auto_generated": true
+      },
+      "voice_vector": {
+        "label": "Vetor de Voz",
+        "type": "array",
+        "description": "Embedding de características de voz do colaborador"
+      }
     }
+  }
 }

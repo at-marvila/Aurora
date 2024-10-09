@@ -1,0 +1,32 @@
+{
+    "employee_interactions": {
+      "fields": {
+        "interaction_id": {
+          "label": "ID da Interação",
+          "type": "uuid",
+          "required": true
+        },
+        "employee_id": {
+          "label": "ID do Colaborador",
+          "type": "uuid",
+          "required": true,
+          "description": "Referência ao colaborador relacionado"
+        },
+        "date": {
+          "label": "Data da Interação",
+          "type": "timestamp",
+          "required": true
+        },
+        "intent": {
+          "label": "Intenção",
+          "type": "string",
+          "required": true
+        },
+        "details": {
+          "label": "Detalhes da Interação",
+          "type": "string",
+          "required": false
+        }
+      }
+    }
+  }  

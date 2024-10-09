@@ -6,8 +6,8 @@ import tempfile
 import os
 import uuid
 from utils.supermarket.generate_supermarket_id import generate_supermarket_id
-from validators.date_validator import format_date  # Corrigido para apontar para o local correto do format_date
-from validators.data_utils import format_document  # Corrigido para apontar para o local correto do format_document
+from validators.date_validator import validate_date  # Corrigido para apontar para o local correto do format_date
+from validators.document_validator import validate_document  # Corrigido para apontar para o local correto do format_document
 from utils.audio.audio_utils import save_audio_wav
 from utils.firebase.firebase_utils import upload_to_firebase
 
@@ -75,10 +75,10 @@ class RegisterEmployee:
                 # Tratamento para os campos de data e documento
                 if field == "date_of_birth":
                     # Utiliza a função de limpeza de data
-                    employee_data[field] = format_date(response)
+                    employee_data[field] = validate_date(response)
                 elif field == "document":
                     # Utiliza a função de limpeza de número de documento
-                    document_number = format_document(response)
+                    document_number = validate_document(response)
                     employee_data[field] = document_number
                 elif attributes['type'] == 'timestamp':
                     employee_data[field] = datetime.now().isoformat()
