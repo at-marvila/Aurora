@@ -51,10 +51,11 @@
         "auto_generated": false,
         "description": "ID ou nome de quem atualizou o registro pela última vez"
       },
-      "status": {
-        "label": "Status",
+      "active": {
+        "label": "active",
         "type": "boolean",
-        "required": true,
+        "required": false,
+        "auto_generated": true,
         "default": true
       },
       "notification": {
@@ -73,6 +74,67 @@
         "label": "Vetor de Voz",
         "type": "array",
         "description": "Embedding de características de voz do colaborador"
+      },
+      "contact_number": {
+        "label": "Número de Contato",
+        "type": "string",
+        "required": true
+      },
+      "email": {
+        "label": "Email do Colaborador",
+        "type": "string",
+        "required": true
+      },
+      "department": {
+        "label": "Departamento",
+        "type": "string",
+        "required": true
+      },
+      "service_company": {
+        "label": "Empresa Prestadora de Serviço",
+        "type": "string",
+        "required": true
+      },
+      "shift": {
+        "label": "Turno de Trabalho",
+        "type": "map",
+        "required": false,
+        "fields": {
+          "start": {
+            "label": "Início do Turno",
+            "type": "number",
+            "required": true,
+            "default": 8
+          },
+          "end": {
+            "label": "Fim do Turno",
+            "type": "number",
+            "required": true,
+            "default": 18
+          },
+          "week": {
+            "label": "Dias da Semana",
+            "type": "string",
+            "required": false,
+            "default": "5"
+          },
+          "weekend": {
+            "label": "Fim de Semana",
+            "type": "boolean",
+            "required": false,
+            "default": true
+          }
+        }
+      },
+      "recognition_method": {
+        "label": "Método de Reconhecimento",
+        "type": "string",
+        "required": false
+      },
+      "recognition_score": {
+        "label": "Score de Reconhecimento",
+        "type": "string",
+        "required": false
       }
     }
   }

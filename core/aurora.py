@@ -22,18 +22,17 @@ class AuroraAI:
         self.recognizer = srcd.Recognizer()
         self.intent_actions = self.load_yaml_file('../data/intent_actions.yaml')
         self.responses = self.load_yaml_file('../data/responses.yaml')
-        self.supermarket_config = self.load_yaml_file('../data/configs/supermarket_config.yaml')  # Carregando a config do supermercado
+        self.supermarket_config = self.load_yaml_file('../data/configs/supermarket_config.yaml')
         self.register_employee_instance = RegisterEmployee(self, firebase_conn, self.supermarket_config)
         self.inactivity_counter = 0
+        self.voice_vector = None  # Armazena o vetor de voz após "Oi Aurora"
 
     def load_yaml_file(self, relative_path):
-        """Carrega um arquivo YAML e retorna os dados"""
         yaml_path = os.path.join(os.path.dirname(__file__), relative_path)
         with open(yaml_path, 'r', encoding='utf-8') as file:
             return yaml.safe_load(file)
 
     def get_response(self, category, action=None):
-        """Obtém uma resposta da categoria especificada"""
         if action and action in self.responses['actions']:
             return self.responses['actions'][action]
         if category in self.responses:
@@ -41,17 +40,19 @@ class AuroraAI:
         return self.responses['default_response'][0]
     
     def normalize_text(self, text):
-        """Normaliza o texto reconhecido"""
         return text.lower().replace("colaboradores", "colaborador").replace("clientes", "cliente").replace("promoções", "promoção")
 
-    def handle_greeting(self):
-        """Trata a saudação inicial"""
-        response = self.get_response('greetings')
-        logging.info(f"Aurora: {response}")
-        print(f"Aurora: {response}")
+    def handle_greeting(self, audio):
+        try:
+            self.voice_vector = self.register_employee_instance.voice_recognition.generate_embedding(audio.get_wav_data())
+            response = self.get_response('greetings')
+            logging.info(f"Aurora: {response}")
+            print(f"Aurora: {response}")
+        except ValueError as e:
+            logging.error(f"Erro ao gerar o vetor de voz: {e}")
+            print("Aurora: Houve um erro ao processar o vetor de voz.")
 
     def execute_command(self, recognized_text, audio=None):
-        """Executa o comando correspondente ao texto reconhecido"""
         normalized_text = self.normalize_text(recognized_text)
         logging.debug(f"Texto reconhecido e normalizado: {normalized_text}")
 
@@ -75,31 +76,29 @@ class AuroraAI:
         logging.warning(f"Aurora: {self.get_response('default_response')}")
 
     def recognize_speech(self):
-        """Reconhece a fala e inicia a interação"""
         while True:
             print("Aurora: Aguardando saudação 'Oi Aurora' para iniciar...")
             try:
-                recognized_text, audio = self.listen_and_save(prompt="Você: ", timeout=10)  # Escuta por 10 segundos para "Oi Aurora"
+                recognized_text, audio = self.listen_and_save(prompt="Você: ", timeout=10)
                 if recognized_text:
                     if "oi aurora" in recognized_text:
-                        self.handle_greeting()
-                        self.interaction_loop()  # Entra no loop de interação
+                        self.handle_greeting(audio)  # Salva o vetor de voz
+                        self.interaction_loop()
                     elif "aurora desligar" in recognized_text:
                         print(self.get_response('farewells'))
-                        break  # Sai da aplicação se o comando de encerramento for dado
+                        break
             except srcd.WaitTimeoutError:
                 print("Aurora: Continuo aguardando a saudação 'Oi Aurora'...")
-                continue  # Continua aguardando por uma saudação "Oi Aurora"
+                continue
             except Exception as e:
                 print(f"Aurora: Houve um erro inesperado: {e}")
                 continue
 
     def interaction_loop(self):
-        """Loop para interação após o 'Oi Aurora' inicial"""
-        self.inactivity_counter = 0  # Reseta o contador de inatividade
+        self.inactivity_counter = 0
         while True:
             try:
-                recognized_text, audio = self.listen_and_save(prompt="Você: ", timeout=5)  # Continua ouvindo durante a interação
+                recognized_text, audio = self.listen_and_save(prompt="Você: ", timeout=5)
                 if recognized_text:
                     self.inactivity_counter = 0
 
@@ -116,29 +115,25 @@ class AuroraAI:
                         prompt = self.get_response('inactive_prompt')
                         print(f"Aurora: {prompt}")
 
-                    elif self.inactivity_counter >= 4:  # Tentativa de interação após 4 ciclos
+                    elif self.inactivity_counter >= 4:
                         print("Aurora: Sessão encerrada por inatividade.")
                         self.handle_session_end()
                         break
 
             except srcd.WaitTimeoutError:
                 self.inactivity_counter += 1
-
                 if self.inactivity_counter == 2:
                     prompt = self.get_response('inactive_prompt')
                     print(f"Aurora: {prompt}")
-
                 elif self.inactivity_counter >= 4:
                     print("Aurora: Sessão encerrada por inatividade.")
                     self.handle_session_end()
                     break
-
             except Exception as e:
                 logging.error(f"Aurora: Houve um erro inesperado: {e}")
                 continue
 
     def listen_and_save(self, prompt="Diga algo:", lang="pt-BR", timeout=5):
-        """Escuta e salva o áudio"""
         with srcd.Microphone() as source:
             self.recognizer.adjust_for_ambient_noise(source)
             print(prompt)
@@ -154,16 +149,7 @@ class AuroraAI:
                 logging.error(f"Aurora: Erro no serviço de reconhecimento de voz: {e}")
                 return None, None
 
-    def upload_audio(self, local_file, bucket_path):
-        """Faz upload de um arquivo de áudio para o Firebase"""
-        upload_to_firebase(local_file, bucket_path)
-
-    def save_audio(self, audio_data, file_path):
-        """Salva um arquivo de áudio em formato WAV"""
-        save_audio_wav(audio_data, file_path)
-
     def handle_session_end(self):
-        """Método para manipular o encerramento de uma sessão"""
         logging.info("Aurora: Encerrando e salvando a sessão atual...")
         print("Aurora: Encerrando e salvando a sessão atual...")
 
