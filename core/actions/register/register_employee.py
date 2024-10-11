@@ -129,11 +129,11 @@ class RegisterEmployee:
             return
 
         # Define o caminho detalhado para salvar no Firestore
-        firestore_path = f"regions/{self.region}/states/{self.state}/cities/{self.city.replace(' ', '_').lower()}/supermarkets/{employee_data['supermarket_id']}/employees/{document_number}"
+        firestore_path = f"regions/{self.region}/states/{self.state}/cities/{self.city.replace(' ', '_').lower()}/supermarkets/{self.generate_supermarket_id()}/employees"
 
-        # Tenta inserir os dados no Firestore
+        # Tenta inserir os dados no Firestore com caminho completo
         if document_number:
-            self.firestore_ops.upsert_employee(employee_data, document_id=document_number)
-            self.logger.info(f"Aurora: Cadastro concluído e enviado ao Firestore no caminho {firestore_path}")
+            self.firestore_ops.upsert_employee(employee_data, document_id=document_number, firestore_path=firestore_path)
+            self.logger.info(f"Aurora: Cadastro concluído e enviado ao Firestore no caminho {firestore_path}/{document_number}")
         else:
             self.logger.error("Aurora: Não foi possível registrar o colaborador, número de documento não fornecido.")
