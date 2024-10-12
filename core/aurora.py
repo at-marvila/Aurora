@@ -1,14 +1,14 @@
 import os
 import yaml
 import logging
+import random
 import speech_recognition as srcd
 from fuzzywuzzy import fuzz
 from integrations.firebase.connections import FirebaseConnection
 from utils.firebase.firebase_utils import upload_to_firebase
-from utils.audio.audio_utils import save_audio_wav
+from utils.audio.audio_utils import save_audio_wav, listen_and_save
 from utils.logging.logging_config import setup_logging
 from actions.register.register_employee import RegisterEmployee
-import random
 from integrations.firebase.firestore_operations import FirestoreOperations
 
 # Configura o logging
@@ -38,7 +38,7 @@ class AuroraAI:
         if category in self.responses:
             return random.choice(self.responses[category])
         return self.responses['default_response'][0]
-    
+
     def normalize_text(self, text):
         return text.lower().replace("colaboradores", "colaborador").replace("clientes", "cliente").replace("promoções", "promoção")
 
@@ -47,10 +47,9 @@ class AuroraAI:
             self.voice_vector = self.register_employee_instance.voice_recognition.generate_embedding(audio.get_wav_data())
             response = self.get_response('greetings')
             logging.info(f"Aurora: {response}")
-            print(f"Aurora: {response}")
         except ValueError as e:
             logging.error(f"Erro ao gerar o vetor de voz: {e}")
-            print("Aurora: Houve um erro ao processar o vetor de voz.")
+            logging.error("Aurora: Houve um erro ao processar o vetor de voz.")
 
     def execute_command(self, recognized_text, audio=None):
         normalized_text = self.normalize_text(recognized_text)
@@ -77,33 +76,31 @@ class AuroraAI:
 
     def recognize_speech(self):
         while True:
-            print("Aurora: Aguardando saudação 'Oi Aurora' para iniciar...")
+            logging.info("Aurora: Aguardando saudação 'Oi Aurora' para iniciar...")
             try:
-                recognized_text, audio = self.listen_and_save(prompt="Você: ", timeout=10)
+                recognized_text, audio = listen_and_save(self.recognizer, prompt="Você: ", timeout=10)
                 if recognized_text:
                     if "oi aurora" in recognized_text:
                         self.handle_greeting(audio)  # Salva o vetor de voz
                         self.interaction_loop()
                     elif "aurora desligar" in recognized_text:
-                        print(self.get_response('farewells'))
+                        logging.info(self.get_response('farewells'))
                         break
             except srcd.WaitTimeoutError:
-                print("Aurora: Continuo aguardando a saudação 'Oi Aurora'...")
-                continue
+                logging.info("Aurora: Continuo aguardando a saudação 'Oi Aurora'...")
             except Exception as e:
-                print(f"Aurora: Houve um erro inesperado: {e}")
-                continue
+                logging.error(f"Aurora: Houve um erro inesperado: {e}")
 
     def interaction_loop(self):
         self.inactivity_counter = 0
         while True:
             try:
-                recognized_text, audio = self.listen_and_save(prompt="Você: ", timeout=5)
+                recognized_text, audio = listen_and_save(self.recognizer, prompt="Você: ", timeout=5)
                 if recognized_text:
                     self.inactivity_counter = 0
 
                     if "aurora, por do sol" in recognized_text:
-                        print(self.get_response('farewells'))
+                        logging.info(self.get_response('farewells'))
                         self.handle_session_end()
                         break
 
@@ -113,10 +110,10 @@ class AuroraAI:
 
                     if self.inactivity_counter == 2:
                         prompt = self.get_response('inactive_prompt')
-                        print(f"Aurora: {prompt}")
+                        logging.info(f"Aurora: {prompt}")
 
                     elif self.inactivity_counter >= 4:
-                        print("Aurora: Sessão encerrada por inatividade.")
+                        logging.info("Aurora: Sessão encerrada por inatividade.")
                         self.handle_session_end()
                         break
 
@@ -124,34 +121,16 @@ class AuroraAI:
                 self.inactivity_counter += 1
                 if self.inactivity_counter == 2:
                     prompt = self.get_response('inactive_prompt')
-                    print(f"Aurora: {prompt}")
+                    logging.info(f"Aurora: {prompt}")
                 elif self.inactivity_counter >= 4:
-                    print("Aurora: Sessão encerrada por inatividade.")
+                    logging.info("Aurora: Sessão encerrada por inatividade.")
                     self.handle_session_end()
                     break
             except Exception as e:
                 logging.error(f"Aurora: Houve um erro inesperado: {e}")
-                continue
-
-    def listen_and_save(self, prompt="Diga algo:", lang="pt-BR", timeout=5):
-        with srcd.Microphone() as source:
-            self.recognizer.adjust_for_ambient_noise(source)
-            print(prompt)
-            try:
-                audio = self.recognizer.listen(source, timeout=timeout, phrase_time_limit=10)
-                recognized_text = self.recognizer.recognize_google(audio, language=lang).lower()
-                logging.info(f"Texto reconhecido: {recognized_text}")
-                return recognized_text, audio
-            except srcd.UnknownValueError:
-                logging.warning("Aurora: Não consegui entender o que você disse.")
-                return None, None
-            except srcd.RequestError as e:
-                logging.error(f"Aurora: Erro no serviço de reconhecimento de voz: {e}")
-                return None, None
 
     def handle_session_end(self):
         logging.info("Aurora: Encerrando e salvando a sessão atual...")
-        print("Aurora: Encerrando e salvando a sessão atual...")
 
 if __name__ == "__main__":
     aurora = AuroraAI()
