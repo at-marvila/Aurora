@@ -1,10 +1,10 @@
-# Aurora - Smart AI Solutions for Supermarkets
+# Aurora - Soluções de IA Inteligente para Supermercados
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+[![Licença](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![Status do Build](https://img.shields.io/badge/build-passing-brightgreen)
 
 ## Descrição
 
-**Aurora** é uma inteligência artificial avançada projetada para transformar a experiência de compras em supermercados. Ao integrar tecnologias de ponta como reconhecimento de fala e processamento de linguagem natural (NLP), Aurora personaliza a interação com os clientes e otimiza a gestão interna do supermercado. Com Aurora, os estabelecimentos podem oferecer um atendimento mais ágil, intuitivo e personalizado, adaptando-se às necessidades dinâmicas do mercado de varejo.
+**Aurora** é uma solução de inteligência artificial projetada para transformar a experiência de compras em supermercados. Integrando tecnologias de ponta como reconhecimento de fala e processamento de linguagem natural (NLP), Aurora oferece interações personalizadas com os clientes e otimiza a gestão interna dos supermercados. Com Aurora, estabelecimentos podem proporcionar atendimento ágil, intuitivo e adaptado às necessidades do mercado varejista.
 
 ## Índice
 
@@ -16,7 +16,7 @@
   - [Variáveis de Ambiente](#variáveis-de-ambiente)
 - [Uso](#uso)
   - [Exemplos de Comandos](#exemplos-de-comandos)
-  - [Fluxos de Trabalho](#fluxos-de-trabalho)
+  - [Principais Fluxos de Trabalho](#principais-fluxos-de-trabalho)
 - [Contribuição](#contribuição)
   - [Relatório de Bugs](#relatório-de-bugs)
   - [Sugestões de Melhorias](#sugestões-de-melhorias)
@@ -27,26 +27,26 @@
 
 ### Pré-requisitos
 
-- Python 3.x
-- Dependências adicionais listadas em `requirements.txt`
-- Acesso a um banco de dados Firebase (para integração de dados e armazenamento)
-- Conexão com a internet para utilizar APIs externas
+- **Python 3.x** (certifique-se de estar atualizado com a versão recomendada)
+- **Firebase**: Acesso a um banco de dados Firebase para integração de dados e armazenamento.
+- **Dependências**: Listadas no arquivo `requirements.txt`.
+- **Conexão com a Internet**: Necessária para utilizar as APIs externas.
 
 ### Passos
 
-1. Clone o repositório:
+1. **Clone o repositório**:
 
     ```bash
     git clone https://github.com/username/repo.git
     ```
 
-2. Navegue para o diretório do projeto:
+2. **Navegue para o diretório do projeto**:
 
     ```bash
-    cd repo
+    cd Aurora
     ```
 
-3. Crie um ambiente virtual:
+3. **Crie um ambiente virtual**:
 
     ```bash
     python -m venv env
@@ -54,49 +54,51 @@
     .\env\Scripts\activate   # Para Windows
     ```
 
-4. Instale as dependências:
+4. **Instale as dependências**:
 
     ```bash
     pip install -r requirements.txt
     ```
 
-5. Configure as variáveis de ambiente conforme necessário (veja a seção [Configuração](#configuração)).
+5. **Configurações de ambiente**: Defina as variáveis de ambiente (veja a seção [Configuração](#configuração)).
 
-6. Execute o script principal:
+6. **Execute o script principal**:
 
     ```bash
-    python -m aurora.core.aurora
+    python -m core.aurora
     ```
 
 ## Configuração
 
 ### Configurações de Arquivos
 
-O projeto utiliza arquivos de configuração em formato YAML e JSON. Esses arquivos podem ser encontrados no diretório `data/` e são usados para definir as ações e intenções que a IA pode executar.
+A Aurora utiliza arquivos de configuração em formatos YAML e JSON. Esses arquivos estão no diretório `config/` para facilitar a manutenção e o acesso.
 
-- **intent_actions.yaml**: Define as ações que Aurora pode realizar com base em frases específicas ou reconhecimento de voz.
+- **intent_actions.yaml**: Define ações com base em frases ou reconhecimento de voz.
 - **employees.json**: Armazena informações dos colaboradores para personalizar interações.
 
 ### Variáveis de Ambiente
 
-Certifique-se de configurar as seguintes variáveis de ambiente para que o projeto funcione corretamente:
+Configure as seguintes variáveis de ambiente para assegurar o funcionamento correto da Aurora:
 
-- `FIREBASE_API_KEY`: Chave de API do Firebase para acessar o banco de dados e armazenamento.
+- `FIREBASE_API_KEY`: Chave de API do Firebase para acesso ao banco de dados e armazenamento.
 - `FIREBASE_PROJECT_ID`: ID do projeto Firebase.
-- `AURORA_ENV`: Define o ambiente de execução (`development`, `staging`, `production`).
+- `AURORA_ENV`: Ambiente de execução (`development`, `staging`, `production`).
+- `REDIS_URL`: URL de conexão para o cache Redis (se aplicável).
+- `GOOGLE_CLOUD_SPEECH_CREDENTIALS`: Credenciais para integração com o Google Cloud Speech-to-Text.
 
 ## Uso
 
 ### Exemplos de Comandos
 
-Aqui estão alguns exemplos de como interagir com a Aurora:
+Aqui estão alguns exemplos de comandos para interagir com a Aurora:
 
 ```bash
-# Para verificar a voz registrada de um cliente
-python -m aurora.core.aurora --action "verificar voz"
+# Verificar voz registrada de um cliente
+python -m core.aurora --action "verificar voz"
 
-# Para registrar um novo cliente
-python -m aurora.core.aurora --action "cadastro cliente"
+# Registrar um novo cliente
+python -m core.aurora --action "cadastro cliente"
 
-# Para consultar a promoção do dia
-python -m aurora.core.aurora --action "qual a promoção do dia"
+# Consultar a promoção do dia
+python -m core.aurora --action "qual a promoção do dia"
