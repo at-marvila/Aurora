@@ -1,104 +1,82 @@
-# Aurora - Soluções de IA Inteligente para Supermercados
+# Aurora Engine
 
-[![Licença](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![Status do Build](https://img.shields.io/badge/build-passing-brightgreen)
+### Overview
+O **Aurora Engine** é uma assistente virtual personalizada, desenvolvida especificamente para o ambiente de supermercados. A solução é composta por dois principais componentes:
 
-## Descrição
+- **Aurora Assistente Virtual**: Interage diretamente com usuários e colaboradores em cada supermercado, automatizando processos e facilitando operações.
+- **Aurora Hub**: Portal centralizado premium, que oferece visualizações, relatórios e insights para a gestão estratégica.
 
-**Aurora** é uma solução de inteligência artificial projetada para transformar a experiência de compras em supermercados. Integrando tecnologias de ponta como reconhecimento de fala e processamento de linguagem natural (NLP), Aurora oferece interações personalizadas com os clientes e otimiza a gestão interna dos supermercados. Com Aurora, estabelecimentos podem proporcionar atendimento ágil, intuitivo e adaptado às necessidades do mercado varejista.
+### Principais Tecnologias
 
-## Índice
+- **Backend**:
+  - **Python**: Implementação do motor de IA e processamento.
+  - **Node.js**: Expansão para o frontend do Aurora Hub.
+  
+- **Reconhecimento de Voz e NLP**:
+  - **speech_recognition**: Testes iniciais.
+  - **Google Cloud Speech-to-Text**: Reconhecimento de voz de alta precisão.
+  - **SpeechBrain + Transformers**: Para embeddings vetoriais e processamento de linguagem natural avançado.
 
-- [Instalação](#instalação)
-  - [Pré-requisitos](#pré-requisitos)
-  - [Passos](#passos)
-- [Configuração](#configuração)
-  - [Configurações de Arquivos](#configurações-de-arquivos)
-  - [Variáveis de Ambiente](#variáveis-de-ambiente)
-- [Uso](#uso)
-  - [Exemplos de Comandos](#exemplos-de-comandos)
-  - [Principais Fluxos de Trabalho](#principais-fluxos-de-trabalho)
-- [Contribuição](#contribuição)
-  - [Relatório de Bugs](#relatório-de-bugs)
-  - [Sugestões de Melhorias](#sugestões-de-melhorias)
-- [Licença](#licença)
-- [Contato](#contato)
+- **Banco de Dados e Cache**:
+  - **Firebase Firestore**: Armazenamento persistente e estruturado para dados de configuração e perfil de colaboradores.
+  - **Redis Vetorial**: Cache para armazenamento rápido de embeddings vetoriais.
 
-## Instalação
+- **Infraestrutura**:
+  - **Docker e Kubernetes**: Orquestração de contêineres para escalabilidade.
+  - **Google Cloud Platform (GCP)**: Ambiente de hospedagem.
 
-### Pré-requisitos
+- **Autenticação e Segurança**:
+  - **OAuth 2.0 e Firebase Authentication**: Controle de acesso seguro.
+  - **Google Secret Manager**: Armazenamento seguro de chaves.
 
-- **Python 3.x** (certifique-se de estar atualizado com a versão recomendada)
-- **Firebase**: Acesso a um banco de dados Firebase para integração de dados e armazenamento.
-- **Dependências**: Listadas no arquivo `requirements.txt`.
-- **Conexão com a Internet**: Necessária para utilizar as APIs externas.
+### Estrutura de Dados
 
-### Passos
+#### Firebase Firestore
+- **Estrutura Hierárquica**:
+  - **Regions / States / Cities / Supermarkets**: Organização de dados por localidade.
+  - **Documentos de Supermercado**:
+    - **store_configuration**: Configurações específicas da loja.
+    - **employees**: Perfis de colaboradores.
+    - **workspace_access**: Permissões para o Aurora Hub.
 
-1. **Clone o repositório**:
+#### Redis (Vetorial)
+- **Chaves Estruturadas por Supermercado**:
+  - **intention e response**: Embeddings vetoriais, organizados e reutilizáveis.
+  - **Perfis de Colaboradores**: Chaves únicas para cada supermercado e colaborador.
 
-    ```bash
-    git clone https://github.com/username/repo.git
-    ```
+### Organização de Arquivos
 
-2. **Navegue para o diretório do projeto**:
+- **core/embedding_manager.py**: Centraliza o gerenciamento dos embeddings no Redis.
+- **core/embedding_loader.py**: Carrega e verifica embeddings ao iniciar.
+- **core/embedding_processor.py**: Processa e prepara dados de intents e responses.
+- **data/intents/**: Configurações de intents e responses para o Aurora.
 
-    ```bash
-    cd Aurora
-    ```
+### Fluxo de Processamento
 
-3. **Crie um ambiente virtual**:
+1. **Pré-Processamento de Embeddings**:
+   - `embedding_processor.py` gera embeddings a partir de `actions.yaml` e `responses.yaml`, armazenando no Redis com chaves organizadas.
 
-    ```bash
-    python -m venv env
-    source env/bin/activate  # Para Linux/MacOS
-    .\env\Scripts\activate   # Para Windows
-    ```
+2. **Carregamento Inicial**:
+   - `embedding_loader.py` verifica e carrega embeddings existentes do Redis para o Aurora.
 
-4. **Instale as dependências**:
+3. **Operação do Aurora**:
+   - **Interação**: Acessa intents e responses processados, oferecendo respostas rápidas e precisas.
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+### Fluxo de Interação e Ativação
 
-5. **Configurações de ambiente**: Defina as variáveis de ambiente (veja a seção [Configuração](#configuração)).
+- **Ativação e Segurança**:
+  - Validação e ativação seguras com chaves armazenadas no Google Secret Manager.
+  
+- **Interação do Usuário**:
+  - Comando “Oi Aurora” inicia a interação.
+  - Embeddings do Redis garantem respostas rápidas e eficientes.
 
-6. **Execute o script principal**:
+- **Aurora Hub**:
+  - Permite acesso diferenciado a relatórios e insights estratégicos com controle de permissões.
 
-    ```bash
-    python -m core.aurora
-    ```
+### Configuração e Início do Projeto
 
-## Configuração
-
-### Configurações de Arquivos
-
-A Aurora utiliza arquivos de configuração em formatos YAML e JSON. Esses arquivos estão no diretório `config/` para facilitar a manutenção e o acesso.
-
-- **intent_actions.yaml**: Define ações com base em frases ou reconhecimento de voz.
-- **employees.json**: Armazena informações dos colaboradores para personalizar interações.
-
-### Variáveis de Ambiente
-
-Configure as seguintes variáveis de ambiente para assegurar o funcionamento correto da Aurora:
-
-- `FIREBASE_API_KEY`: Chave de API do Firebase para acesso ao banco de dados e armazenamento.
-- `FIREBASE_PROJECT_ID`: ID do projeto Firebase.
-- `AURORA_ENV`: Ambiente de execução (`development`, `staging`, `production`).
-- `REDIS_URL`: URL de conexão para o cache Redis (se aplicável).
-- `GOOGLE_CLOUD_SPEECH_CREDENTIALS`: Credenciais para integração com o Google Cloud Speech-to-Text.
-
-## Uso
-
-### Exemplos de Comandos
-
-Aqui estão alguns exemplos de comandos para interagir com a Aurora:
-
-```bash
-# Verificar voz registrada de um cliente
-python -m core.aurora --action "verificar voz"
-
-# Registrar um novo cliente
-python -m core.aurora --action "cadastro cliente"
-
-# Consultar a promoção do dia
-python -m core.aurora --action "qual a promoção do dia"
+1. **Instalação de Dependências**:
+   Utilize o [Poetry](https://python-poetry.org/) para gerenciar as dependências:
+   ```bash
+   poetry install
