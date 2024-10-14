@@ -1,4 +1,6 @@
-# Aurora Engine
+# Aurora - Smart AI Solutions for Supermarkets
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 
 ### Overview
 O **Aurora Engine** é uma assistente virtual personalizada, desenvolvida especificamente para o ambiente de supermercados. A solução é composta por dois principais componentes:
