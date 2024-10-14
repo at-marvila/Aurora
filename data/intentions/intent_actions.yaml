@@ -1,0 +1,89 @@
+actions:
+  employee_check_in:  # Registro de apontamento de horas
+    description: "Registrar o início ou fim do turno dos colaboradores, garantindo pontualidade."
+    function: register_timekeeping
+    triggers:
+      voice_recognition: true
+      phrases:
+        - "bom dia"
+        - "boa tarde"
+        - "oi aurora"
+        - "iniciar turno"
+        - "encerrar turno"
+      keywords:
+        - "check-in"
+        - "início de turno"
+        - "fim de turno"
+    conditions:
+      supermarket_location: true
+      employee_id_required: true
+
+  client_verification:  # Validação da voz para identificação de clientes
+    description: "Verifica a voz do cliente com base em registros anteriores para autenticação."
+    function: recognize_registered_voice
+    triggers:
+      phrases:
+        - "verificar voz"
+        - "verificar cadastro"
+        - "confirmar identidade"
+        - "checar registro de voz"
+      keywords:
+        - "autenticação"
+        - "verificação de cliente"
+        - "validação de identidade"
+    conditions:
+      customer_account_exists: true
+      voice_recognition: true
+
+  client_registration:  # Registro de novos clientes
+    description: "Registra informações essenciais para novos clientes no sistema."
+    function: register_client
+    triggers:
+      phrases:
+        - "cadastro cliente"
+        - "registrar cliente"
+        - "novo cadastro"
+        - "registro de novos clientes"
+        - "adicionar cliente"
+      keywords:
+        - "registro"
+        - "informações de cliente"
+        - "identidade de cliente"
+    conditions:
+      new_client_data_complete: true
+
+  daily_promotion:  # Consulta de ofertas do dia
+    description: "Fornece detalhes sobre as ofertas e promoções atuais do supermercado."
+    function: deal_of_day
+    triggers:
+      phrases:
+        - "qual a promoção do dia"
+        - "promoção de hoje"
+        - "ofertas"
+        - "descontos"
+        - "promoções atuais"
+      keywords:
+        - "promoções"
+        - "descontos"
+        - "oferta especial"
+    conditions:
+      promotion_available: true
+      promotion_updated: true
+
+  employee_registration:  # Registro de novos colaboradores
+    description: "Registra colaboradores no sistema para integrar no ambiente de trabalho."
+    function: register_employee
+    triggers:
+      phrases:
+        - "cadastro de colaboradores"
+        - "registrar colaborador"
+        - "novo colaborador"
+        - "registro de novos colaboradores"
+        - "adicionar funcionário"
+      keywords:
+        - "funcionário"
+        - "registro de colaborador"
+        - "equipe"
+    conditions:
+      onboarding_documentation_complete: true
+      employee_data_valid: true

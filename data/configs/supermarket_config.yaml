@@ -1,21 +1,23 @@
-supermarket:
-  name: "SUPERMAGO"
-  region: "south"
-  state: "RS"
-  city: "Porto Alegre"
-  district: "Bela Vista"
-  store_number: "003"
-  
-  # Dicionário de acrônimos para cidades e distritos
-  acronyms:
-    city:
-      "Porto Alegre": "POA"
-      "Rio de Janeiro": "RJ"
-      "São Paulo": "SP"
-    district:
-      "Bela Vista": "BV"
-      "Centro": "CTR"
-      "Jardins": "JD"
+  supermarket:
+    name: "CONDOR"
+    region: "south"
+    state: "SC"
+    city: "Joinville"
+    district: "América"
+    store_number: "002"
+    
+    # Dicionário de acrônimos para cidades e distritos
+    acronyms:
+      city:
+        "Porto Alegre": "POA"
+        "Rio de Janeiro": "RJ"
+        "São Paulo": "SP"
+        "Joinville": "JOI"
+      district:
+        "Bela Vista": "BV"
+        "Centro": "CTR"
+        "Jardins": "JD"
+        "América": "AMR"
 
-  # Formato do identificador para o supermercado
-  identifier_format: "{name}-{state}-{city_acronym}-{district_acronym}-{store_number}"
+    # Formato do identificador para o supermercado
+    identifier_format: "{name}-{state}-{city_acronym}-{district_acronym}-{store_number}"

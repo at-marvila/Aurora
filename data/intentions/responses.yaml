@@ -1,0 +1,78 @@
+default_response:
+  - text: "Desculpe, não entendi o que você disse. Pode repetir?"
+    context: "Utilizado quando a IA não identifica uma intenção clara."
+
+greetings:
+  - text: "Oi Aurora"
+    context: "Comando de ativação da Aurora pelo usuário."
+  - text: "Oi, como posso ajudar você hoje?"
+    context: "Saudação inicial sem nome."
+  - text: "Olá, como posso ajudar você hoje, {nome}?"
+    context: "Saudação inicial personalizada com o nome do usuário."
+  - text: "Oi, {nome}! Em que posso ser útil?"
+    context: "Saudação personalizada após 'Oi Aurora'."
+  - text: "Bom dia! Como posso ajudar?"
+    context: "Saudação de bom dia."
+  - text: "Boa tarde! Em que posso ser útil?"
+    context: "Saudação de boa tarde."
+  - text: "Boa noite! Precisa de algo?"
+    context: "Saudação de boa noite."
+
+farewells:
+  - text: "Até logo, {nome}! Se precisar de mim, basta dizer 'Oi Aurora'."
+    context: "Mensagem de despedida quando o usuário deseja encerrar a interação."
+  - text: "Até a próxima, {nome}! Estarei aqui se precisar."
+    context: "Despedida alternativa com nome do usuário."
+  - text: "Tchau, {nome}! Foi um prazer ajudar."
+    context: "Despedida final personalizada com o nome do usuário."
+  - text: "Encerrando a sessão, até breve!"
+    context: "Mensagem de encerramento sem personalização."
+
+inactive_prompt:
+  - text: "Você ainda está aí, {nome}?"
+    context: "Pergunta após um período de inatividade."
+  - text: "Precisa de mais alguma coisa, {nome}?"
+    context: "Pergunta para verificar se o usuário deseja continuar a interação."
+  - text: "Ainda posso ajudar com algo?"
+    context: "Verificação após inatividade prolongada."
+  - text: "Estou por aqui caso precise de mais alguma coisa."
+    context: "Mensagem passiva após inatividade."
+
+actions:
+  register_timekeeping:
+    - text: "Registro de ponto realizado com sucesso para o colaborador {nome}."
+      context: "Mensagem confirmando o registro de ponto de um colaborador."
+    - text: "Ponto registrado para {nome}."
+      context: "Alternativa para confirmação de registro de ponto."
+    - text: "Registro de início/fim do turno efetuado."
+      context: "Confirmação breve do registro de ponto."
+
+  recognize_registered_voice:
+    - text: "Verificando a voz registrada para o colaborador {nome}."
+      context: "Confirmação de que a verificação de voz está em andamento."
+    - text: "Reconhecimento de voz em andamento para {nome}."
+      context: "Alternativa de confirmação para verificação de voz."
+
+  register_client:
+    - text: "Iniciando o cadastro de um novo cliente, {nome}."
+      context: "Mensagem de confirmação para iniciar o cadastro de um cliente."
+    - text: "Cadastro de cliente iniciado."
+      context: "Confirmação breve para início de cadastro de cliente."
+    - text: "Pronto para cadastrar um novo cliente."
+      context: "Mensagem alternativa para início do cadastro de cliente."
+
+  deal_of_day:
+    - text: "A promoção do dia é {promoção}. Confira mais detalhes!"
+      context: "Resposta informando sobre a promoção do dia."
+    - text: "Hoje temos uma oferta especial: {promoção}!"
+      context: "Mensagem alternativa informando sobre a promoção do dia."
+    - text: "Promoção do dia: {promoção}."
+      context: "Versão breve da resposta sobre a promoção."
+
+  register_employee:
+    - text: "Iniciando o cadastro de um novo colaborador chamado {nome}."
+      context: "Confirmação para o início do cadastro de um colaborador."
+    - text: "Cadastro de colaborador em andamento para {nome}."
+      context: "Mensagem alternativa de confirmação para o cadastro de colaborador."
+    - text: "Novo colaborador {nome} sendo registrado."
+      context: "Versão curta da confirmação de cadastro de colaborador."

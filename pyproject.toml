@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "Aurora"
+version = "0.1.0"
+description = "Assistente Virtual - Supermercados."
+authors = ["rafael.marvila@sevent.tech"]
+
+[tool.poetry.dependencies]
+python = "^3.10"  # versão ajustada para compatibilidade com transformers
+speechbrain = "^0.5.10"
+SpeechRecognition = "^3.8.1"
+firebase_admin = "^5.0.0"
+pyaudio = "^0.2.11"
+pyyaml = "^5.4.1"
+transformers = "^4.25.1"  # adiciona transformers
+torch = "^1.11.0"  # ou outra versão compatível com sua arquitetura
+redis = "^4.0.2"  # para integração com Redis
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+pytest = "^7.1.0"   
