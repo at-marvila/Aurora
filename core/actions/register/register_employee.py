@@ -1,9 +1,8 @@
-import asyncio
 import logging
 from integrations.firebase.firestore_operations import FirestoreOperations
 from utils.helpers.general_helpers import load_employee_template, generate_supermarket_id, get_default_employee_data
 from utils.audio.voice_recognition import VoiceRecognition
-from utils.audio.audio_utils import listen_and_save_async
+from utils.audio.audio_utils import listen_and_save
 from validators.document_validator import validate_document
 from validators.data_cleaner import validate_data
 from typing import Optional
@@ -19,7 +18,7 @@ class RegisterEmployee:
         self.supermarket_config = supermarket_config['supermarket']
         self.supermarket_id = generate_supermarket_id(self.supermarket_config)
 
-    async def register_employee(self) -> None:
+    def register_employee(self) -> None:
         folder_path = tempfile.gettempdir()
         employee_template = load_employee_template()
         combined_audio_data = []
@@ -36,22 +35,22 @@ class RegisterEmployee:
             if field == "shift":
                 shift_data = {"week": "5"}
                 self.logger.info("Aurora: Por favor, informe o Horário de Entrada.")
-                start_response, _ = await listen_and_save_async(self.aurora.recognizer, prompt="Você: ")
+                start_response, _ = listen_and_save(self.aurora.recognizer, prompt="Você: ")
                 shift_data['start'] = start_response if start_response and start_response.isdigit() else attributes['fields']['start']['default']
 
                 self.logger.info("Aurora: Por favor, informe o Horário de Saída.")
-                end_response, _ = await listen_and_save_async(self.aurora.recognizer, prompt="Você: ")
+                end_response, _ = listen_and_save(self.aurora.recognizer, prompt="Você: ")
                 shift_data['end'] = end_response if end_response and end_response.isdigit() else attributes['fields']['end']['default']
 
                 self.logger.info("Aurora: Trabalha nos finais de semana? (sim/não)")
-                weekend_response, _ = await listen_and_save_async(self.aurora.recognizer, prompt="Você: ")
+                weekend_response, _ = listen_and_save(self.aurora.recognizer, prompt="Você: ")
                 shift_data['weekend'] = weekend_response.lower() in ["sim", "yes", "true"]
 
                 employee_data['shift'] = shift_data
                 continue
 
             self.logger.info(f"Aurora: Por favor, informe {attributes['label']}.")
-            response, audio = await listen_and_save_async(self.aurora.recognizer, prompt="Você: ")
+            response, audio = listen_and_save(self.aurora.recognizer, prompt="Você: ")
 
             if response:
                 self.logger.debug(f"Recebido dado para o campo {field}: {response}")
