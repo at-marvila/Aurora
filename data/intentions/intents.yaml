@@ -1,7 +1,8 @@
-actions:
-  employee_check_in:  # Registro de apontamento de horas
+intents:
+  employee_check_in:
     description: "Registrar o início ou fim do turno dos colaboradores, garantindo pontualidade."
     function: register_timekeeping
+    context: "registro_turno"
     triggers:
       voice_recognition: true
       phrases:
@@ -18,9 +19,10 @@ actions:
       supermarket_location: true
       employee_id_required: true
 
-  client_verification:  # Validação da voz para identificação de clientes
+  client_verification:
     description: "Verifica a voz do cliente com base em registros anteriores para autenticação."
     function: recognize_registered_voice
+    context: "verificacao_cliente"
     triggers:
       phrases:
         - "verificar voz"
@@ -35,9 +37,10 @@ actions:
       customer_account_exists: true
       voice_recognition: true
 
-  client_registration:  # Registro de novos clientes
+  client_registration:
     description: "Registra informações essenciais para novos clientes no sistema."
     function: register_client
+    context: "cadastro_cliente"
     triggers:
       phrases:
         - "cadastro cliente"
@@ -52,9 +55,10 @@ actions:
     conditions:
       new_client_data_complete: true
 
-  daily_promotion:  # Consulta de ofertas do dia
+  daily_promotion:
     description: "Fornece detalhes sobre as ofertas e promoções atuais do supermercado."
     function: deal_of_day
+    context: "consulta_promocao"
     triggers:
       phrases:
         - "qual a promoção do dia"
@@ -70,9 +74,10 @@ actions:
       promotion_available: true
       promotion_updated: true
 
-  employee_registration:  # Registro de novos colaboradores
+  register_employee:
     description: "Registra colaboradores no sistema para integrar no ambiente de trabalho."
     function: register_employee
+    context: "cadastro_colaborador"
     triggers:
       phrases:
         - "cadastro de colaboradores"

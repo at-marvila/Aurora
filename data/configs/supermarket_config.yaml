@@ -1,10 +1,10 @@
   supermarket:
-    name: "CONDOR"
+    name: "BOURBON"
     region: "south"
-    state: "SC"
-    city: "Joinville"
-    district: "América"
-    store_number: "002"
+    state: "RS"
+    city: "Porto Alegre"
+    district: "Centro"
+    store_number: "001"
     
     # Dicionário de acrônimos para cidades e distritos
     acronyms:

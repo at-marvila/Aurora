@@ -1,39 +1,33 @@
-import logging
+import yaml
 from core.embeddings.embedding_manager import EmbeddingManager
-from integrations.redis_modules.redis_connection import RedisConnection
 
-# Configura a conexão com o Redis
-redis_conn = RedisConnection(
-    host="redis-11850.c279.us-central1-1.gce.redns.redis-cloud.com",
-    port=11850,
-    password="j6BhSRwBhX8wO0bAIp8t1NmpMd1eW9Kf"
-).get_client()
-embedding_manager = EmbeddingManager(redis_conn)
+class EmbeddingLoader:
+    def __init__(self, embedding_manager):
+        self.embedding_manager = embedding_manager
 
-def load_intent_embeddings(intents, supermarket_id):
-    """Carrega embeddings de intents para cada frase individualmente no Redis."""
-    if not embedding_manager.intents_exist_in_redis(supermarket_id):
-        logging.warning(f"Embeddings de intents não encontrados para o supermercado {supermarket_id}. Executando o `embedding_processor.py`.")
-        embedding_manager.load_intents_embeddings(intents, supermarket_id)
+    def load_intents_embeddings(self, filepath='data/intentions/intents.yaml'):
+        with open(filepath, 'r', encoding='utf-8') as file:
+            intents_data = yaml.safe_load(file)['intents']
+            for intent_name, intent_info in intents_data.items():
+                context = intent_info['context']
+                phrases = intent_info['triggers']['phrases']
+                for phrase in phrases:
+                    self.embedding_manager.create_embedding(phrase, intent_name, context)
 
-    intent_embeddings = {}
-    for intent, data in intents.items():
-        intent_embeddings[intent] = {}
-        for phrase in data['triggers']['phrases']:
-            key = f"{supermarket_id}:intent:{intent}:{phrase}"
-            intent_embeddings[intent][phrase] = embedding_manager.check_or_insert_embedding(key, phrase)
-    return intent_embeddings
+    def load_actions_embeddings(self, filepath='data/intentions/actions.yaml'):
+        with open(filepath, 'r', encoding='utf-8') as file:
+            actions_data = yaml.safe_load(file)['actions']
+            for action_name, responses in actions_data.items():
+                for response in responses:
+                    context = response['context']
+                    text = response['text']
+                    self.embedding_manager.create_embedding(text, action_name, context)
 
-def load_response_embeddings(responses, supermarket_id):
-    """Carrega embeddings de responses já existentes no Redis ou cria novos."""
-    embeddings = {}
-    for category, response_list in responses.items():
-        category_embeddings = []
-        for response in response_list:
-            # Verifica se o formato do response é uma string simples ou um dicionário com chave 'text'
-            text = response if isinstance(response, str) else response.get("text", "")
-            key = f"{supermarket_id}:response:{category}"
-            embedding = embedding_manager.check_or_insert_embedding(key, text)
-            category_embeddings.append(embedding)
-        embeddings[category] = category_embeddings
-    return embeddings
+    def load_responses_embeddings(self, filepath='data/intentions/responses.yaml'):
+        with open(filepath, 'r', encoding='utf-8') as file:
+            responses_data = yaml.safe_load(file)['responses']
+            for category, responses in responses_data.items():
+                for response in responses:
+                    context = response['context']
+                    text = response['text']
+                    self.embedding_manager.create_embedding(text, category, context)

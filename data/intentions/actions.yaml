@@ -1,0 +1,20 @@
+actions:
+  - category: "register_timekeeping"
+    text: "Registrando início/fim de turno"
+    context: "registro_turno"
+
+  - category: "recognize_registered_voice"
+    text: "Verificando voz"
+    context: "verificacao_cliente"
+
+  - category: "register_client"
+    text: "Registrando novo cliente"
+    context: "cadastro_cliente"
+
+  - category: "deal_of_day"
+    text: "Buscando promoção do dia"
+    context: "consulta_promocao"
+
+  - category: "register_employee"
+    text: "Registrando novo colaborador"
+    context: "cadastro_colaborador"

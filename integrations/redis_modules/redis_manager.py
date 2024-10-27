@@ -1,37 +1,43 @@
+# core/components/embedding_manager.py
+
 import redis
 import json
 from datetime import datetime
 import logging
 
-class RedisManager:
+class EmbeddingManager:
     def __init__(self, host, port, password):
         # Inicializa a conexão com o Redis
         self.client = redis.Redis(host=host, port=port, password=password)
 
-    def insert_action_embedding(self, function_name, vector):
+    def insert_action_embedding(self, function_name, vector, context=None):
         """
-        Insere ou recupera um embedding para uma ação específica no Redis.
+        Insere ou recupera um embedding para uma ação específica no Redis, incluindo o contexto.
         Evita reprocessamento verificando se o embedding já existe.
         """
         key = f"action_embedding:{function_name}"
         
         if not self.client.exists(key):
-            self.client.hset(key, mapping={
+            data = {
                 "vector": json.dumps(vector),
+                "context": context,
                 "created_at": datetime.utcnow().isoformat()
-            })
-            logging.info(f"Embedding inserido para a função '{function_name}'")
+            }
+            self.client.hset(key, mapping=data)
+            logging.info(f"Embedding inserido para a função '{function_name}' com contexto '{context}'")
         return key
 
     def get_action_embedding(self, function_name):
         """
-        Recupera o vetor de embedding para uma ação especificada, se existir.
+        Recupera o vetor de embedding e o contexto para uma ação especificada, se existir.
         """
         key = f"action_embedding:{function_name}"
         
         if self.client.exists(key):
             try:
-                return json.loads(self.client.hget(key, "vector"))
+                data = self.client.hgetall(key)
+                data['vector'] = json.loads(data['vector'])
+                return data  # Retorna um dicionário com 'vector' e 'context'
             except json.JSONDecodeError as e:
                 logging.warning(f"Erro ao carregar o embedding para a função '{function_name}': {e}")
         else:
@@ -43,12 +49,13 @@ class RedisManager:
         Insere um novo hash para o perfil do usuário no Redis usando `document` como identificador.
         """
         key = f"profile:{supermarket_chain_code}:{document}"
-        self.client.hset(key, mapping={
+        data = {
             "vector": json.dumps(vector),
             "last_access": datetime.utcnow().isoformat(),
             "created_at": datetime.utcnow().isoformat(),
             "document": document
-        })
+        }
+        self.client.hset(key, mapping=data)
         return key
 
     def get_user_profile(self, supermarket_chain_code, document):
@@ -76,9 +83,17 @@ class RedisManager:
         else:
             logging.warning(f"O perfil '{document}' não existe para atualização.")
 
+    def delete_embedding(self, function_name):
+        """
+        Deleta um embedding específico do Redis.
+        """
+        key = f"action_embedding:{function_name}"
+        self.client.delete(key)
+        logging.info(f"Embedding '{function_name}' deletado com sucesso.")
+
 # Exemplo de uso
-# redis_manager = RedisManager(host="redis-11850.c279.us-central1-1.gce.redns.redis-cloud.com", port=11850, password="sua_senha")
-# redis_manager.insert_action_embedding("register_timekeeping", [0.12, 0.34, 0.56, 0.78])
-# embedding = redis_manager.get_action_embedding("register_timekeeping")
-# redis_manager.insert_user_profile("SUPERMAGO-RS-POA-CTR-001", "98765432100", [0.235, 0.543, 0.678, 0.876])
-# profile = redis_manager.get_user_profile("SUPERMAGO-RS-POA-CTR-001", "98765432100")
+# embedding_manager = EmbeddingManager(host="localhost", port=6379, password="sua_senha")
+# embedding_manager.insert_action_embedding("register_timekeeping", [0.12, 0.34, 0.56, 0.78], context="registro_turno")
+# data = embedding_manager.get_action_embedding("register_timekeeping")
+# embedding_manager.insert_user_profile("SUPERMAGO-RS-POA-CTR-001", "98765432100", [0.235, 0.543, 0.678, 0.876])
+# profile = embedding_manager.get_user_profile("SUPERMAGO-RS-POA-CTR-001", "98765432100")

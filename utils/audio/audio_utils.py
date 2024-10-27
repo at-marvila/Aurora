@@ -15,21 +15,28 @@ def save_audio_wav(audio_data, file_path):
     except Exception as e:
         logging.error(f"Erro ao salvar o áudio: {e}")
 
-def listen_and_save(recognizer, prompt="Diga algo:", lang="pt-BR", timeout=5):
-    """
-    Captura e processa o áudio do usuário, retornando o texto reconhecido e o áudio.
-    """
-    with srcd.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source)
+import logging
+import speech_recognition as sr
+
+def listen_and_save(recognizer, prompt="Você: ", timeout=10):
+    with sr.Microphone() as source:
         print(prompt)
         try:
-            audio = recognizer.listen(source, timeout=timeout, phrase_time_limit=10)
-            recognized_text = recognizer.recognize_google(audio, language=lang).lower()
-            logging.info(f"Texto reconhecido: {recognized_text}")
+            # Tenta ouvir o áudio com o timeout especificado
+            audio = recognizer.listen(source, timeout=timeout)
+            if audio is None:
+                logging.error("Erro de áudio: Nenhum áudio foi capturado.")
+                return None, None
+            
+            # Reconhece o áudio com o idioma definido como português
+            recognized_text = recognizer.recognize_google(audio, language="pt-BR")
             return recognized_text, audio
-        except srcd.UnknownValueError:
-            logging.warning("Aurora: Não consegui entender o que você disse.")
+        except sr.WaitTimeoutError:
+            logging.error("Erro de timeout: Nenhum som detectado.")
             return None, None
-        except srcd.RequestError as e:
-            logging.error(f"Aurora: Erro no serviço de reconhecimento de voz: {e}")
+        except sr.UnknownValueError:
+            logging.error("Erro de reconhecimento: O áudio não pôde ser interpretado.")
+            return None, None
+        except Exception as e:
+            logging.error(f"Erro inesperado de áudio: {e}")
             return None, None
