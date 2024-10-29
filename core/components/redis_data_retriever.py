@@ -1,7 +1,6 @@
-# core/components/redis_data_retriever.py
-
 import redis
 import logging
+import json
 
 class RedisDataRetriever:
     def __init__(self, redis_client):
@@ -10,19 +9,31 @@ class RedisDataRetriever:
     def get_intent_response(self, supermarket_key, intent_category, intent_phrase):
         intent_key = f"{supermarket_key}:intent:{intent_category}:{intent_phrase}"
         response = self.redis_client.get(intent_key)
-        logging.debug(f"get_intent_response - Chave: {intent_key}, Resposta: {response}")
+        
+        # Loga a resposta original sem formatação adicional
+        if response:
+            logging.debug(f"get_intent_response - Chave: {intent_key}, Resposta: {response}")
+                
         return response
-    
+
     def get_action_response(self, supermarket_key, action_name, context):
         action_key = f"{supermarket_key}:action:{action_name}:{context}"
         response = self.redis_client.get(action_key)
-        logging.debug(f"get_action_response - Chave: {action_key}, Resposta: {response}")
+        
+        # Loga a resposta original sem formatação adicional
+        if response:
+            logging.debug(f"get_action_response - Chave: {action_key}, Resposta: {response}")
+                
         return response
-    
+
     def get_response(self, supermarket_key, response_category, response_context):
         response_key = f"{supermarket_key}:response:{response_category}:{response_context}"
         response = self.redis_client.get(response_key)
-        logging.debug(f"get_response - Chave: {response_key}, Resposta: {response}")
+        
+        # Loga a resposta original sem formatação adicional
+        if response:
+            logging.debug(f"get_response - Chave: {response_key}, Resposta: {response}")
+                
         return response
 
     def get_all_subkeys(self, base_key):
@@ -33,18 +44,13 @@ class RedisDataRetriever:
 
     def get(self, key):
         response = self.redis_client.get(key)
-        logging.debug(f"get - Chave: {key}, Resposta: {response}")
+        
+        # Loga a resposta original sem formatação adicional
+        if response:
+            logging.debug(f"get - Chave: {key}, Resposta: {response}")
+                
         return response
 
     def keys(self, pattern):
         """Busca todas as chaves que correspondem ao padrão fornecido."""
         return self.redis_client.keys(pattern)
-
-
-# Exemplo de uso
-if __name__ == "__main__":
-    redis_client = redis.StrictRedis.from_url(
-        "redis://default:j6BhSRwBhX8wO0bAIp8t1NmpMd1eW9Kf@redis-11850.c279.us-central1-1.gce.redns.redis-cloud.com:11850", 
-        decode_responses=True
-    )
-    data_retriever = RedisDataRetriever(redis_client)

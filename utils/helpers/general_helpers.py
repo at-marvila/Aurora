@@ -43,3 +43,28 @@ def get_default_employee_data(supermarket_id: str) -> dict:
         "supermarket_id": supermarket_id,
         "recognition_score": 98
     }
+
+def format_output(embeddings):
+    output = "intents\n"
+    
+    for intent_name, embedding in embeddings['intents'].items():
+        formatted_embedding = format_embedding(embedding)
+        output += f"{intent_name}: {formatted_embedding} /\n"
+
+    output += "\n\nactions\n"
+    
+    for action_name, embedding in embeddings['actions'].items():
+        formatted_embedding = format_embedding(embedding)
+        output += f"{action_name}: {formatted_embedding} /\n"
+        
+    print(output)
+
+# Função que formata o embedding
+def format_embedding(embedding):
+    # Extrai os primeiros e últimos cinco valores do embedding
+    start_values = embedding[:5]
+    end_values = embedding[-5:]
+    
+    # Formata a saída no estilo solicitado
+    formatted_embedding = f"[{', '.join(map(str, start_values))}] ... [{', '.join(map(str, end_values))}]"
+    return formatted_embedding

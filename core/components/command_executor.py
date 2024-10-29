@@ -20,7 +20,7 @@ class CommandExecutor:
             print("Aurora: Olá! Como posso ajudar?")
             return
 
-        intent_context = self.detect_intent_context(recognized_text)
+        intent_context, intent_name = self.detect_intent_context(recognized_text)
         if not intent_context:
             logging.warning("Nenhum contexto encontrado para o comando.")
             print("Aurora: Comando não reconhecido.")
