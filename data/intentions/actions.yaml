@@ -1,20 +1,29 @@
 actions:
   - category: "register_timekeeping"
-    text: "Registrando início/fim de turno"
-    context: "registro_turno"
+    contexts:
+      - context: "registro_turno"
+        text: "Registrando início/fim de turno"
 
   - category: "recognize_registered_voice"
-    text: "Verificando voz"
-    context: "verificacao_cliente"
+    contexts:
+      - context: "verificacao_cliente"
+        text: "Verificando voz"
 
   - category: "register_client"
-    text: "Registrando novo cliente"
-    context: "cadastro_cliente"
+    contexts:
+      - context: "cadastro_cliente"
+        text: "Registrando novo cliente"
 
   - category: "deal_of_day"
-    text: "Buscando promoção do dia"
-    context: "consulta_promocao"
+    contexts:
+      - context: "consulta_promocao"
+        text: "Buscando promoção do dia"
 
   - category: "register_employee"
-    text: "Registrando novo colaborador"
     context: "cadastro_colaborador"
+    texts:
+      - "Registrando novo colaborador"
+      - "Adicionando funcionário"
+      - "Novo colaborador"
+      - "Registrar colaborador"
+      - "Registro de novos colaboradores"

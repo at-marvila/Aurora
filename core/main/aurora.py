@@ -4,6 +4,7 @@ from core.components.command_executor import CommandExecutor
 from core.components.interaction_handler import InteractionHandler
 from core.components.context_manager import ContextManager
 from core.components.redis_data_retriever import RedisDataRetriever
+from core.components.action_mapper import ActionMapper  # Importação do ActionMapper
 from utils.logging.logging_config import setup_logging
 from integrations.firebase.connections import FirebaseConnection
 
@@ -19,8 +20,17 @@ redis_data_retriever = RedisDataRetriever(config.redis_conn)
 class AuroraAI:
     def __init__(self):
         self.supermarket_key = config.get_supermarket_key()  # Chave única para o supermercado
-        self.embedding_handler = EmbeddingHandler(config, redis_data_retriever, context_manager)
+        
+        # Inicialize o ActionMapper
+        action_mapper = ActionMapper(context_manager, config)
+        
+        # Passe o action_mapper para o EmbeddingHandler
+        self.embedding_handler = EmbeddingHandler(config, redis_data_retriever, context_manager, action_mapper)
+        
+        # Passe o embedding_handler atualizado para o CommandExecutor
         self.command_executor = CommandExecutor(config, self.embedding_handler, context_manager, redis_data_retriever)
+        
+        # Inicialize o InteractionHandler
         self.interaction_handler = InteractionHandler(config, self.command_executor)
 
     def start(self):

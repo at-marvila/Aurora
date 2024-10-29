@@ -12,18 +12,6 @@ class CommandExecutor:
         self.redis_data_retriever = redis_data_retriever
         self.awaiting_greeting = True
 
-        # Carregar todos os intents do Redis na inicialização para garantir que estejam em cache
-        self.load_all_intents_from_redis()
-
-    def load_all_intents_from_redis(self):
-        """Carrega todos os embeddings de intents do Redis para comparação posterior."""
-        intents = self.config.intent_actions  # Configuração contendo todos os intents definidos
-        for intent_name, intent_data in intents.items():
-            context = intent_data.get("context")
-            if context:
-                self.embedding_handler.load_embedding_for_intent(intent_name, context)
-        logging.debug("Todos os intents foram carregados do Redis para o cache.")
-
     def execute_command(self, recognized_text):
         """Processa o texto reconhecido e executa a ação ou saudação apropriada."""
         if "oi aurora" in recognized_text.lower() and self.awaiting_greeting:
