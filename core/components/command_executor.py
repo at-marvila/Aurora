@@ -1,16 +1,19 @@
 # core/components/command_executor.py
 
 import logging
-from core.components.action_mapper import ActionMapper
+from core.context.aurora_context import AuroraContext
+from core.components.embedding_handler import EmbeddingHandler
 
 class CommandExecutor:
-    def __init__(self, config_manager, embedding_handler, context_manager, redis_data_retriever):
-        self.config = config_manager
+    def __init__(self, aurora_context: AuroraContext, embedding_handler: EmbeddingHandler):
+        self.config = aurora_context.config_manager
         self.embedding_handler = embedding_handler
-        self.context_manager = context_manager
-        self.action_mapper = ActionMapper(context_manager, config_manager)
-        self.redis_data_retriever = redis_data_retriever
+        self.context_manager = aurora_context.context_manager
+        self.redis_data_retriever = aurora_context.redis_data_retriever
         self.awaiting_greeting = True
+
+        # Usa o ActionMapper diretamente do aurora_context
+        self.action_mapper = aurora_context.action_mapper
 
     def execute_command(self, recognized_text):
         """Processa o texto reconhecido e executa a ação ou saudação apropriada."""
@@ -20,22 +23,14 @@ class CommandExecutor:
             print("Aurora: Olá! Como posso ajudar?")
             return
 
-        intent_context, intent_name = self.detect_intent_context(recognized_text)
-        if not intent_context:
-            logging.warning("Nenhum contexto encontrado para o comando.")
-            print("Aurora: Comando não reconhecido.")
-            return
+        # Obtenha o embedding do texto e execute a melhor ação diretamente
+        input_embedding = self.embedding_handler.get_text_embedding(recognized_text)
+        action_name, context, intent, similarity = self.embedding_handler.find_best_action(input_embedding)
 
-        action_category = self.embedding_handler.retrieve_category_from_context(intent_context)
-        if action_category:
-            response = self.action_mapper.execute_action(action_category)
-            print(f"Aurora: {response}")
+        # Executa a ação encontrada e imprime o resultado
+        if action_name:
+            result = self.action_mapper.execute_action(action_name)
+            print(f"Aurora: {result}")
         else:
             logging.warning("Nenhuma ação correspondente foi encontrada.")
             print("Aurora: Não consegui encontrar uma ação correspondente ao que foi dito.")
-    
-    def detect_intent_context(self, text):
-        """Determina o contexto da intenção com base no texto reconhecido."""
-        input_embedding = self.embedding_handler.get_text_embedding(text)
-        context, _ = self.embedding_handler.find_best_action(input_embedding)
-        return context

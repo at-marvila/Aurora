@@ -1,10 +1,13 @@
+# c:\Sevent\Dev\Aurora\core\main\aurora.py
+
 from core.components.config_manager import ConfigManager
+from core.context.aurora_context import AuroraContext
 from core.components.embedding_handler import EmbeddingHandler
 from core.components.command_executor import CommandExecutor
 from core.components.interaction_handler import InteractionHandler
 from core.components.context_manager import ContextManager
 from core.components.redis_data_retriever import RedisDataRetriever
-from core.components.action_mapper import ActionMapper  # Importação do ActionMapper
+from core.components.action_mapper import ActionMapper
 from utils.logging.logging_config import setup_logging
 from integrations.firebase.connections import FirebaseConnection
 
@@ -19,17 +22,24 @@ redis_data_retriever = RedisDataRetriever(config.redis_conn)
 
 class AuroraAI:
     def __init__(self):
-        self.supermarket_key = config.get_supermarket_key()  # Chave única para o supermercado
-        
-        # Inicialize o ActionMapper
-        action_mapper = ActionMapper(context_manager, config)
-        
+        # Inicializa o contexto Aurora e passa a própria instância como aurora_instance
+        self.aurora_context = AuroraContext(config, context_manager, redis_data_retriever, firebase_conn, self)
+
+        # Inicializa o ActionMapper com `self`
+        action_mapper = ActionMapper(
+            context_manager,
+            config,
+            self,  # Passa a própria instância
+            firebase_conn,
+            self.aurora_context.supermarket_config
+        )
+
         # Passe o action_mapper para o EmbeddingHandler
         self.embedding_handler = EmbeddingHandler(config, redis_data_retriever, context_manager, action_mapper)
-        
-        # Passe o embedding_handler atualizado para o CommandExecutor
-        self.command_executor = CommandExecutor(config, self.embedding_handler, context_manager, redis_data_retriever)
-        
+
+        # Passe o aurora_context e o embedding_handler para o CommandExecutor
+        self.command_executor = CommandExecutor(self.aurora_context, self.embedding_handler)
+
         # Inicialize o InteractionHandler
         self.interaction_handler = InteractionHandler(config, self.command_executor)
 

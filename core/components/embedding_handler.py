@@ -5,6 +5,7 @@ import torch
 import logging
 import json
 import yaml
+from utils.helpers.general_helpers import format_embedding
 
 class EmbeddingHandler:
     def __init__(self, config_manager, redis_data_retriever, context_manager, action_mapper):
@@ -61,15 +62,6 @@ class EmbeddingHandler:
         else:
             logging.warning("[load_all_embeddings] Nenhum intent encontrado no Redis para o supermercado especificado.")
 
-    def format_embedding(self, embedding, length=5):
-        """
-        Formata o embedding para exibir apenas uma amostra dos primeiros e últimos valores,
-        reduzindo o excesso de informações no log.
-        """
-        start = embedding[:length]
-        end = embedding[-length:] if len(embedding) > length else []
-        return f"{start} ... {end}"
-
     def load_embedding_for_intent(self, intent_name, context):
         supermarket_key = self.config.get_supermarket_key()
         intent_key = f"{supermarket_key}:intent:{context}:{intent_name}"
@@ -78,7 +70,7 @@ class EmbeddingHandler:
         if embedding_data:
             try:
                 embedding = json.loads(embedding_data)
-                formatted_embedding = self.format_embedding(embedding)  # Exibe uma amostra formatada
+                formatted_embedding = format_embedding(embedding)
                 self.action_embeddings[f"{context}:{intent_name}"] = embedding
                 logging.debug(f"[load_embedding_for_intent] Embedding para '{intent_name}': {formatted_embedding}")
             except json.JSONDecodeError as e:
@@ -91,7 +83,7 @@ class EmbeddingHandler:
         with torch.no_grad():
             embeddings = self.model(**tokens).last_hidden_state.mean(dim=1)
         embedding_result = embeddings.flatten().numpy()
-        formatted_embedding = self.format_embedding(embedding_result)  # Exibe uma amostra formatada
+        formatted_embedding = format_embedding(embedding_result)
         logging.debug(f"[get_text_embedding] Embedding gerado para '{text}': {formatted_embedding}")
         return embedding_result
 
@@ -107,7 +99,9 @@ class EmbeddingHandler:
                 highest_similarity, best_action_key = similarity, action_key
 
         if best_action_key:
-            context, intent = best_action_key.split(":")
+            parts = best_action_key.split(":")
+            context, intent = parts[0], parts[1] if len(parts) > 1 else None
+
             function, derived_context = self.find_function_by_intent_phrase(intent)
             if function:
                 logging.debug(f"[find_best_action] Melhor ação: {function} (Contexto: {derived_context}, Intent: {intent}) com similaridade: {highest_similarity:.4f}")

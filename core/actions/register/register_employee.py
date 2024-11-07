@@ -13,8 +13,11 @@ class RegisterEmployee:
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
         self.aurora = aurora_instance
+
+        if not hasattr(self.aurora, 'recognizer') or self.aurora.recognizer is None:
+            self.aurora.recognizer = VoiceRecognition().recognizer  # Usar Recognizer interno
+
         self.firestore_ops = FirestoreOperations(firebase_conn)
-        self.voice_recognition = VoiceRecognition()
         self.supermarket_config = supermarket_config['supermarket']
         self.supermarket_id = generate_supermarket_id(self.supermarket_config)
 
@@ -23,7 +26,6 @@ class RegisterEmployee:
         employee_template = load_employee_template()
         combined_audio_data = []
         
-        # Dados automáticos e valores padrão
         employee_data = get_default_employee_data(self.supermarket_id)
         order_of_questions = employee_template['collaborator_registration']['fields']
         document_number: Optional[str] = None
@@ -35,22 +37,22 @@ class RegisterEmployee:
             if field == "shift":
                 shift_data = {"week": "5"}
                 self.logger.info("Aurora: Por favor, informe o Horário de Entrada.")
-                start_response, _ = listen_and_save(self.aurora.recognizer, prompt="Você: ")
+                start_response, _ = listen_and_save(self.aurora.recognizer)
                 shift_data['start'] = start_response if start_response and start_response.isdigit() else attributes['fields']['start']['default']
 
                 self.logger.info("Aurora: Por favor, informe o Horário de Saída.")
-                end_response, _ = listen_and_save(self.aurora.recognizer, prompt="Você: ")
+                end_response, _ = listen_and_save(self.aurora.recognizer)
                 shift_data['end'] = end_response if end_response and end_response.isdigit() else attributes['fields']['end']['default']
 
                 self.logger.info("Aurora: Trabalha nos finais de semana? (sim/não)")
-                weekend_response, _ = listen_and_save(self.aurora.recognizer, prompt="Você: ")
+                weekend_response, _ = listen_and_save(self.aurora.recognizer)
                 shift_data['weekend'] = weekend_response.lower() in ["sim", "yes", "true"]
 
                 employee_data['shift'] = shift_data
                 continue
 
             self.logger.info(f"Aurora: Por favor, informe {attributes['label']}.")
-            response, audio = listen_and_save(self.aurora.recognizer, prompt="Você: ")
+            response, audio = listen_and_save(self.aurora.recognizer)
 
             if response:
                 self.logger.debug(f"Recebido dado para o campo {field}: {response}")
@@ -65,7 +67,7 @@ class RegisterEmployee:
         employee_data.update(validate_data(employee_data))
 
         try:
-            voice_embedding = self.voice_recognition.generate_embedding(b''.join(combined_audio_data))
+            voice_embedding = self.aurora.recognizer.generate_embedding(b''.join(combined_audio_data))
             employee_data["voice_vector"] = list(map(float, voice_embedding.tolist()))
             employee_data["recognition_method"] = "speechbrain_xvector_voxceleb"
         except Exception as e:

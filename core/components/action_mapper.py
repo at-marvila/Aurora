@@ -1,10 +1,15 @@
+# action_mapper.py
+
 import logging
 import importlib
 
 class ActionMapper:
-    def __init__(self, context_manager, config_manager):
+    def __init__(self, context_manager, config_manager, aurora_instance, firebase_conn, supermarket_config):
         self.context_manager = context_manager
         self.config_manager = config_manager
+        self.aurora_instance = aurora_instance
+        self.firebase_conn = firebase_conn
+        self.supermarket_config = supermarket_config
         self.action_paths = {
             "register_employee": "core.actions.register.register_employee.RegisterEmployee",
             "register_client": "core.actions.register.register_client.RegisterClient",
@@ -24,10 +29,23 @@ class ActionMapper:
             module_name, class_name = module_path.rsplit('.', 1)
             module = importlib.import_module(module_name)
             action_class = getattr(module, class_name)
-            action_instance = action_class()
 
-            # Executa a ação e captura o resultado
-            result = action_instance.execute()
+            # Instancia a classe da ação com os parâmetros necessários
+            action_instance = action_class(self.aurora_instance, self.firebase_conn, self.supermarket_config)
+
+            # Verifica se o método correto está disponível na instância da ação
+            if action_name == "register_employee" and hasattr(action_instance, "register_employee"):
+                result = action_instance.register_employee()
+            elif action_name == "register_client" and hasattr(action_instance, "register_client"):
+                result = action_instance.register_client()
+            elif action_name == "register_timekeeping" and hasattr(action_instance, "register_timekeeping"):
+                result = action_instance.register_timekeeping()
+            elif action_name == "deal_of_day" and hasattr(action_instance, "deal_of_day"):
+                result = action_instance.deal_of_day()
+            else:
+                logging.warning(f"Método para a ação '{action_name}' não encontrado.")
+                return f"Método para a ação '{action_name}' não encontrado."
+
             logging.info(f"Ação '{action_name}' executada com sucesso.")
             return result if result else "Ação executada, mas sem resposta definida."
 

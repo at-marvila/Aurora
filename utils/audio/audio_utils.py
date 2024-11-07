@@ -1,5 +1,4 @@
-# core/utils/audio_utils.py
-import speech_recognition as srcd
+import speech_recognition as sr
 import wave
 import logging
 
@@ -15,20 +14,17 @@ def save_audio_wav(audio_data, file_path):
     except Exception as e:
         logging.error(f"Erro ao salvar o áudio: {e}")
 
-import logging
-import speech_recognition as sr
-
-def listen_and_save(recognizer, prompt="Você: ", timeout=10):
+def listen_and_save(recognizer, prompt="Você: "):
+    """Captura áudio e o reconhece usando o Google Speech Recognition sem argumentos adicionais."""
     with sr.Microphone() as source:
         print(prompt)
         try:
-            # Tenta ouvir o áudio com o timeout especificado
-            audio = recognizer.listen(source, timeout=timeout)
+            recognizer.adjust_for_ambient_noise(source)  # Ajusta para ruído ambiente
+            audio = recognizer.listen(source)
             if audio is None:
                 logging.error("Erro de áudio: Nenhum áudio foi capturado.")
                 return None, None
             
-            # Reconhece o áudio com o idioma definido como português
             recognized_text = recognizer.recognize_google(audio, language="pt-BR")
             return recognized_text, audio
         except sr.WaitTimeoutError:

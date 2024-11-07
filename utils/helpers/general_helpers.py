@@ -59,7 +59,6 @@ def format_output(embeddings):
         
     print(output)
 
-# Função que formata o embedding
 def format_embedding(embedding):
     # Extrai os primeiros e últimos cinco valores do embedding
     start_values = embedding[:5]

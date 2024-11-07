@@ -1,6 +1,7 @@
 import redis
 import logging
 import json
+from utils.helpers.general_helpers import format_embedding  # Importa a função de formatação
 
 class RedisDataRetriever:
     def __init__(self, redis_client):
@@ -10,9 +11,13 @@ class RedisDataRetriever:
         intent_key = f"{supermarket_key}:intent:{intent_category}:{intent_phrase}"
         response = self.redis_client.get(intent_key)
         
-        # Loga a resposta original sem formatação adicional
+        # Loga a resposta formatada, mas mantém o response original
         if response:
-            logging.debug(f"get_intent_response - Chave: {intent_key}, Resposta: {response}")
+            try:
+                formatted_response = format_embedding(json.loads(response))
+                logging.debug(f"get_intent_response - Chave: {intent_key}, Resposta formatada: {formatted_response}")
+            except (json.JSONDecodeError, TypeError):
+                logging.error(f"Erro ao formatar resposta para a chave '{intent_key}'")
                 
         return response
 
@@ -20,9 +25,13 @@ class RedisDataRetriever:
         action_key = f"{supermarket_key}:action:{action_name}:{context}"
         response = self.redis_client.get(action_key)
         
-        # Loga a resposta original sem formatação adicional
+        # Loga a resposta formatada, mas mantém o response original
         if response:
-            logging.debug(f"get_action_response - Chave: {action_key}, Resposta: {response}")
+            try:
+                formatted_response = format_embedding(json.loads(response))
+                logging.debug(f"get_action_response - Chave: {action_key}, Resposta formatada: {formatted_response}")
+            except (json.JSONDecodeError, TypeError):
+                logging.error(f"Erro ao formatar resposta para a chave '{action_key}'")
                 
         return response
 
@@ -30,9 +39,13 @@ class RedisDataRetriever:
         response_key = f"{supermarket_key}:response:{response_category}:{response_context}"
         response = self.redis_client.get(response_key)
         
-        # Loga a resposta original sem formatação adicional
+        # Loga a resposta formatada, mas mantém o response original
         if response:
-            logging.debug(f"get_response - Chave: {response_key}, Resposta: {response}")
+            try:
+                formatted_response = format_embedding(json.loads(response))
+                logging.debug(f"get_response - Chave: {response_key}, Resposta formatada: {formatted_response}")
+            except (json.JSONDecodeError, TypeError):
+                logging.error(f"Erro ao formatar resposta para a chave '{response_key}'")
                 
         return response
 
@@ -45,9 +58,13 @@ class RedisDataRetriever:
     def get(self, key):
         response = self.redis_client.get(key)
         
-        # Loga a resposta original sem formatação adicional
+        # Loga a resposta formatada, mas mantém o response original
         if response:
-            logging.debug(f"get - Chave: {key}, Resposta: {response}")
+            try:
+                formatted_response = format_embedding(json.loads(response))
+                logging.debug(f"get - Chave: {key}, Resposta formatada: {formatted_response}")
+            except (json.JSONDecodeError, TypeError):
+                logging.error(f"Erro ao formatar resposta para a chave '{key}'")
                 
         return response
 
