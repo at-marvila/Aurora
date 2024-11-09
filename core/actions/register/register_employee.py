@@ -1,3 +1,5 @@
+# core/components/register_employee.py
+
 import logging
 from integrations.firebase.firestore_operations import FirestoreOperations
 from utils.helpers.general_helpers import load_employee_template, generate_supermarket_id, get_default_employee_data
@@ -15,7 +17,7 @@ class RegisterEmployee:
         self.aurora = aurora_instance
 
         if not hasattr(self.aurora, 'recognizer') or self.aurora.recognizer is None:
-            self.aurora.recognizer = VoiceRecognition().recognizer  # Usar Recognizer interno
+            self.aurora.recognizer = VoiceRecognition().recognizer
 
         self.firestore_ops = FirestoreOperations(firebase_conn)
         self.supermarket_config = supermarket_config['supermarket']
@@ -38,21 +40,38 @@ class RegisterEmployee:
                 shift_data = {"week": "5"}
                 self.logger.info("Aurora: Por favor, informe o Horário de Entrada.")
                 start_response, _ = listen_and_save(self.aurora.recognizer)
-                shift_data['start'] = start_response if start_response and start_response.isdigit() else attributes['fields']['start']['default']
+                self.logger.info(f"Você: {start_response}")  # Log para exibir a resposta reconhecida
+                if start_response is None:
+                    self.logger.warning("Não foi possível registrar o Horário de Entrada. Repetindo a pergunta.")
+                    continue
+                shift_data['start'] = start_response if start_response.isdigit() else attributes['fields']['start']['default']
 
+                # Repetir o mesmo padrão para os outros campos
+                # Exemplo para "Horário de Saída"
                 self.logger.info("Aurora: Por favor, informe o Horário de Saída.")
                 end_response, _ = listen_and_save(self.aurora.recognizer)
-                shift_data['end'] = end_response if end_response and end_response.isdigit() else attributes['fields']['end']['default']
+                self.logger.info(f"Você: {end_response}")
+                if end_response is None:
+                    self.logger.warning("Não foi possível registrar o Horário de Saída. Repetindo a pergunta.")
+                    continue
+                shift_data['end'] = end_response if end_response.isdigit() else attributes['fields']['end']['default']
 
+                # Exemplo para "Trabalha nos finais de semana"
                 self.logger.info("Aurora: Trabalha nos finais de semana? (sim/não)")
                 weekend_response, _ = listen_and_save(self.aurora.recognizer)
+                self.logger.info(f"Você: {weekend_response}")
+                if weekend_response is None:
+                    self.logger.warning("Não foi possível registrar resposta sobre finais de semana. Repetindo a pergunta.")
+                    continue
                 shift_data['weekend'] = weekend_response.lower() in ["sim", "yes", "true"]
 
                 employee_data['shift'] = shift_data
                 continue
 
+            # Para os outros campos do template
             self.logger.info(f"Aurora: Por favor, informe {attributes['label']}.")
             response, audio = listen_and_save(self.aurora.recognizer)
+            self.logger.info(f"Você: {response}")  # Log para exibir a resposta reconhecida
 
             if response:
                 self.logger.debug(f"Recebido dado para o campo {field}: {response}")
@@ -62,7 +81,7 @@ class RegisterEmployee:
                 combined_audio_data.append(audio.get_wav_data() if audio else b'')
             else:
                 self.logger.warning(f"Aurora: Campo {attributes['label']} não foi preenchido corretamente.")
-                return
+                continue
 
         employee_data.update(validate_data(employee_data))
 
