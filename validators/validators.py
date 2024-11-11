@@ -1,15 +1,16 @@
 # validators/validators.py
 
-# Importando os métodos de validação de outros módulos
 from .document_validator import validate_document
 from .date_validator import validate_date
-from .text_validator import validate_text
-from .data_cleaner import validate_and_correct_email, validate_and_correct_phone, validate_data
+from .text_validator import validate_text, validate_alphanumeric
+from .data_cleaner import (
+    validate_and_correct_email, 
+    validate_and_correct_phone, 
+    validate_data as clean_data
+)
 
 class Validator:
-    """
-    Classe central para validar e corrigir diferentes tipos de dados.
-    """
+    """Classe centralizada para validar e corrigir diferentes tipos de dados."""
 
     @staticmethod
     def validate_document(document):
@@ -24,6 +25,10 @@ class Validator:
         return validate_text(text)
     
     @staticmethod
+    def validate_alphanumeric(text):
+        return validate_alphanumeric(text)
+
+    @staticmethod
     def validate_and_correct_email(email):
         return validate_and_correct_email(email)
     
@@ -33,4 +38,4 @@ class Validator:
 
     @staticmethod
     def validate_data(data):
-        return validate_data(data)
+        return clean_data(data)

@@ -27,7 +27,8 @@ def listen_and_save(recognizer, prompt="Você: "):
                 return None, None
             
             recognized_text = recognizer.recognize_google(audio, language="pt-BR")
-            logging.info(f"Você: {recognized_text}")  # Adiciona log para exibir a fala reconhecida
+            # Remova qualquer log duplicado aqui
+            #logging.info(f"Você: {recognized_text}")  # Deve aparecer apenas uma vez
             return recognized_text, audio
         except sr.WaitTimeoutError:
             logging.warning("Tempo esgotado ao aguardar áudio.")

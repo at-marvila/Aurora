@@ -14,10 +14,11 @@ class InteractionHandler:
         """Loop de reconhecimento de voz para capturar e processar comandos do usuário."""
         while True:
             try:
+                # Chamamos `listen_and_save`, que já faz log de "Você: [texto]"
                 recognized_text, audio = listen_and_save(self.recognizer, prompt="Você: ")
 
                 if recognized_text:
-                    logging.info(f"Texto reconhecido: {recognized_text}")
+                    # Evite log adicional aqui para não duplicar a mensagem "Você: [texto]"
                     self.command_executor.execute_command(recognized_text)
                 else:
                     logging.warning("Aurora: Não consegui entender o que você disse.")

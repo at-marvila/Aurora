@@ -22,7 +22,7 @@ class VoiceRecognition:
             with sr.Microphone() as source:
                 self.recognizer.adjust_for_ambient_noise(source)  # Ajusta para ruído ambiente
                 self.logger.info("Aguardando som...")
-                audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=10)
+                audio = self.recognizer.listen(source, timeout=10, phrase_time_limit=10)
                 audio_data = audio.get_wav_data()
                 return audio_data
         except sr.WaitTimeoutError:

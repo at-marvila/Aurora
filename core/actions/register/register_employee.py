@@ -1,98 +1,102 @@
-# core/components/register_employee.py
-
+import os
 import logging
+import yaml
+import json
 from integrations.firebase.firestore_operations import FirestoreOperations
-from utils.helpers.general_helpers import load_employee_template, generate_supermarket_id, get_default_employee_data
+from utils.helpers.general_helpers import generate_supermarket_id, get_default_employee_data
 from utils.audio.voice_recognition import VoiceRecognition
 from utils.audio.audio_utils import listen_and_save
-from validators.document_validator import validate_document
-from validators.data_cleaner import validate_data
+from validators.validators import Validator
 from typing import Optional
 import tempfile
+
+# Define o caminho base da aplicação como o diretório onde o arquivo principal do projeto está
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+RESPONSES_DIR = os.path.join(BASE_DIR, "data", "employees", "responses")
+PARAMETERS_DIR = os.path.join(BASE_DIR, "data", "employees", "parameters")
+
+def load_responses(file_name):
+    file_path = os.path.join(RESPONSES_DIR, file_name)
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"O arquivo de respostas '{file_path}' não foi encontrado.")
+    with open(file_path, "r", encoding="utf-8") as file:
+        return yaml.safe_load(file)["responses"]
+
+def load_parameters(file_name):
+    file_path = os.path.join(PARAMETERS_DIR, file_name)
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"O arquivo de parâmetros '{file_path}' não foi encontrado.")
+    with open(file_path, "r", encoding="utf-8") as file:
+        return json.load(file)
 
 class RegisterEmployee:
     def __init__(self, aurora_instance, firebase_conn, supermarket_config):
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
         self.aurora = aurora_instance
 
-        if not hasattr(self.aurora, 'recognizer') or self.aurora.recognizer is None:
-            self.aurora.recognizer = VoiceRecognition().recognizer
+        # Instancia VoiceRecognition para capturar e processar áudio
+        if not hasattr(self.aurora, 'voice_recognition'):
+            self.aurora.voice_recognition = VoiceRecognition()
+
+        # Carrega respostas e parâmetros
+        self.responses = load_responses("registration_responses.yaml")
+        self.parameters = load_parameters("employees.json")
 
         self.firestore_ops = FirestoreOperations(firebase_conn)
         self.supermarket_config = supermarket_config['supermarket']
         self.supermarket_id = generate_supermarket_id(self.supermarket_config)
 
     def register_employee(self) -> None:
-        folder_path = tempfile.gettempdir()
-        employee_template = load_employee_template()
         combined_audio_data = []
-        
         employee_data = get_default_employee_data(self.supermarket_id)
-        order_of_questions = employee_template['collaborator_registration']['fields']
         document_number: Optional[str] = None
 
-        for field, attributes in order_of_questions.items():
+        # Itera sobre cada campo requerido no cadastro
+        for field, attributes in self.parameters['collaborator_registration']['fields'].items():
+            # Ignora campos que são preenchidos automaticamente
             if field in ["id", "register_date", "modification_date", "active", "notification", "supermarket_id", "created_by", "updated_by", "voice_vector", "recognition_method", "recognition_score"]:
                 continue
 
+            # Tratamento especial para o campo "shift"
             if field == "shift":
-                shift_data = {"week": "5"}
-                self.logger.info("Aurora: Por favor, informe o Horário de Entrada.")
-                start_response, _ = listen_and_save(self.aurora.recognizer)
-                self.logger.info(f"Você: {start_response}")  # Log para exibir a resposta reconhecida
-                if start_response is None:
-                    self.logger.warning("Não foi possível registrar o Horário de Entrada. Repetindo a pergunta.")
-                    continue
-                shift_data['start'] = start_response if start_response.isdigit() else attributes['fields']['start']['default']
-
-                # Repetir o mesmo padrão para os outros campos
-                # Exemplo para "Horário de Saída"
-                self.logger.info("Aurora: Por favor, informe o Horário de Saída.")
-                end_response, _ = listen_and_save(self.aurora.recognizer)
-                self.logger.info(f"Você: {end_response}")
-                if end_response is None:
-                    self.logger.warning("Não foi possível registrar o Horário de Saída. Repetindo a pergunta.")
-                    continue
-                shift_data['end'] = end_response if end_response.isdigit() else attributes['fields']['end']['default']
-
-                # Exemplo para "Trabalha nos finais de semana"
-                self.logger.info("Aurora: Trabalha nos finais de semana? (sim/não)")
-                weekend_response, _ = listen_and_save(self.aurora.recognizer)
-                self.logger.info(f"Você: {weekend_response}")
-                if weekend_response is None:
-                    self.logger.warning("Não foi possível registrar resposta sobre finais de semana. Repetindo a pergunta.")
-                    continue
-                shift_data['weekend'] = weekend_response.lower() in ["sim", "yes", "true"]
-
-                employee_data['shift'] = shift_data
+                shift_data = self._collect_shift_data(attributes)
+                if shift_data:
+                    employee_data['shift'] = shift_data
                 continue
 
-            # Para os outros campos do template
-            self.logger.info(f"Aurora: Por favor, informe {attributes['label']}.")
-            response, audio = listen_and_save(self.aurora.recognizer)
-            self.logger.info(f"Você: {response}")  # Log para exibir a resposta reconhecida
+            # Pergunta e coleta a resposta usando mensagens do YAML
+            self.logger.info(self.responses.get(f"ask_{field}", f"Por favor, informe {attributes['label']}."))
+            response, audio = self._ask_and_repeat(field, attributes)
 
             if response:
-                self.logger.debug(f"Recebido dado para o campo {field}: {response}")
-                employee_data[field] = response
+                self.logger.info(f"Você: {response}")
+                
+                # Aplica validações específicas para cada campo
+                if field == "email":
+                    employee_data[field] = Validator.validate_and_correct_email(response)
+                elif field == "dob":
+                    employee_data[field] = Validator.validate_date(response)
+                elif field == "contact_number":
+                    employee_data[field] = Validator.validate_and_correct_phone(response)
+                else:
+                    employee_data[field] = response
+                
                 if field == "document":
-                    document_number = validate_document(response)
-                combined_audio_data.append(audio.get_wav_data() if audio else b'')
+                    document_number = Validator.validate_document(response)
+
+                if audio:
+                    combined_audio_data.append(audio.get_wav_data())
             else:
-                self.logger.warning(f"Aurora: Campo {attributes['label']} não foi preenchido corretamente.")
-                continue
+                self.logger.warning(self.responses["field_not_filled"].format(field=attributes['label']))
+                continue  # Repassa ao próximo campo caso o campo não seja preenchido
 
-        employee_data.update(validate_data(employee_data))
+        # Valida e limpa os dados coletados
+        employee_data.update(Validator.validate_data(employee_data))
 
-        try:
-            voice_embedding = self.aurora.recognizer.generate_embedding(b''.join(combined_audio_data))
-            employee_data["voice_vector"] = list(map(float, voice_embedding.tolist()))
-            employee_data["recognition_method"] = "speechbrain_xvector_voxceleb"
-        except Exception as e:
-            self.logger.error(f"Aurora: Erro ao gerar o vetor de voz: {e}")
-            return
+        # Gera o embedding de voz
+        self._generate_voice_embedding(employee_data, combined_audio_data)
 
+        # Define o caminho do Firestore e salva os dados do colaborador
         firestore_path = f"regions/{self.supermarket_config['region']}/states/{self.supermarket_config['state']}/cities/{self.supermarket_config['city'].replace(' ', '_').lower()}/supermarkets/{self.supermarket_id}/employees"
 
         if document_number:
@@ -100,3 +104,58 @@ class RegisterEmployee:
             self.logger.info(f"Aurora: Cadastro concluído e enviado ao Firestore no caminho {firestore_path}/{document_number}")
         else:
             self.logger.error("Aurora: Não foi possível registrar o colaborador, número de documento não fornecido.")
+
+    def _collect_shift_data(self, attributes):
+        """Coleta e processa os dados de turno (shift) do colaborador."""
+        shift_data = {"week": "5"}
+        self.logger.info(self.responses["ask_shift_start"])
+        start_response, _ = self._ask_and_repeat("shift_start", attributes['fields']['start'])
+
+        if start_response and start_response.isdigit():
+            shift_data['start'] = start_response
+        else:
+            shift_data['start'] = attributes['fields']['start']['default']
+
+        self.logger.info(self.responses["ask_shift_end"])
+        end_response, _ = self._ask_and_repeat("shift_end", attributes['fields']['end'])
+
+        if end_response and end_response.isdigit():
+            shift_data['end'] = end_response
+        else:
+            shift_data['end'] = attributes['fields']['end']['default']
+
+        self.logger.info(self.responses["ask_weekend"])
+        weekend_response, _ = self._ask_and_repeat("weekend", attributes)
+
+        if weekend_response:
+            shift_data['weekend'] = weekend_response.lower() in ["sim", "yes", "true"]
+        else:
+            self.logger.warning("Não foi possível registrar resposta sobre finais de semana.")
+
+        return shift_data
+
+    def _ask_and_repeat(self, field, attributes, max_attempts=3):
+        """Pergunta e, em caso de erro, repete a pergunta até `max_attempts` vezes."""
+        attempts = 0
+        while attempts < max_attempts:
+            response, audio = listen_and_save(self.aurora.voice_recognition.recognizer)
+            if response:
+                return response, audio
+            else:
+                self.logger.warning(self.responses["not_understood"])
+                attempts += 1
+        self.logger.warning(self.responses["field_not_filled"].format(field=attributes['label']))
+        return None, None
+
+    def _generate_voice_embedding(self, employee_data, combined_audio_data):
+        """Gera o vetor de voz a partir dos dados de áudio combinados e os adiciona aos dados do colaborador."""
+        try:
+            if combined_audio_data:
+                audio_data = b''.join(combined_audio_data)
+                voice_embedding = self.aurora.voice_recognition.generate_embedding(audio_data)
+                employee_data["voice_vector"] = list(map(float, voice_embedding.tolist()))
+                employee_data["recognition_method"] = "speechbrain_xvector_voxceleb"
+            else:
+                self.logger.warning("Nenhum dado de áudio foi capturado para o vetor de voz.")
+        except Exception as e:
+            self.logger.error(f"Aurora: Erro ao gerar o vetor de voz: {e}")
