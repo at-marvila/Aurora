@@ -1,5 +1,3 @@
-# c:\Sevent\Dev\Aurora\core\main\aurora.py
-
 from core.components.config_manager import ConfigManager
 from core.context.aurora_context import AuroraContext
 from core.components.embedding_handler import EmbeddingHandler
@@ -15,7 +13,7 @@ from integrations.firebase.connections import FirebaseConnection
 setup_logging()
 
 # Inicializa FirebaseConnection, ConfigManager, ContextManager, e RedisDataRetriever
-firebase_conn = FirebaseConnection(r"C:\Sevent\Connections\Connecion firebase\firebase-connection.json", 'sevent-7197f.appspot.com')
+firebase_conn = FirebaseConnection(r"C:\Sevent\Connections\Connecion firebase\aurora-dev-firebase.json", 'sevent-aurora-dev.firebasestorage.app')
 config = ConfigManager(firebase_conn)
 context_manager = ContextManager()
 redis_data_retriever = RedisDataRetriever(config.redis_conn)
@@ -45,6 +43,8 @@ class AuroraAI:
 
     def start(self):
         """Inicia o loop de reconhecimento de voz e interação com o usuário."""
+        # Garantir que embeddings estejam disponíveis antes de iniciar a interação
+        self.embedding_handler.ensure_embeddings_exist()
         self.interaction_handler.recognize_speech()
 
 if __name__ == "__main__":

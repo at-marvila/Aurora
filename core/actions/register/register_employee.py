@@ -51,27 +51,22 @@ class RegisterEmployee:
         employee_data = get_default_employee_data(self.supermarket_id)
         document_number: Optional[str] = None
 
-        # Itera sobre cada campo requerido no cadastro
         for field, attributes in self.parameters['collaborator_registration']['fields'].items():
-            # Ignora campos que são preenchidos automaticamente
             if field in ["id", "register_date", "modification_date", "active", "notification", "supermarket_id", "created_by", "updated_by", "voice_vector", "recognition_method", "recognition_score"]:
                 continue
 
-            # Tratamento especial para o campo "shift"
             if field == "shift":
+                # Coleta os dados do turno de trabalho
                 shift_data = self._collect_shift_data(attributes)
                 if shift_data:
-                    employee_data['shift'] = shift_data
+                    employee_data["shift"] = shift_data
                 continue
 
-            # Pergunta e coleta a resposta usando mensagens do YAML
-            self.logger.info(self.responses.get(f"ask_{field}", f"Por favor, informe {attributes['label']}."))
+            self.logger.info(self.responses.get(f"ask_{field}", f"Please provide {attributes['label']}."))
             response, audio = self._ask_and_repeat(field, attributes)
 
             if response:
-                self.logger.info(f"Você: {response}")
-                
-                # Aplica validações específicas para cada campo
+                self.logger.info(f"You: {response}")
                 if field == "email":
                     employee_data[field] = Validator.validate_and_correct_email(response)
                 elif field == "dob":
@@ -80,7 +75,7 @@ class RegisterEmployee:
                     employee_data[field] = Validator.validate_and_correct_phone(response)
                 else:
                     employee_data[field] = response
-                
+
                 if field == "document":
                     document_number = Validator.validate_document(response)
 
@@ -88,51 +83,52 @@ class RegisterEmployee:
                     combined_audio_data.append(audio.get_wav_data())
             else:
                 self.logger.warning(self.responses["field_not_filled"].format(field=attributes['label']))
-                continue  # Repassa ao próximo campo caso o campo não seja preenchido
+                continue
 
-        # Valida e limpa os dados coletados
         employee_data.update(Validator.validate_data(employee_data))
-
-        # Gera o embedding de voz
         self._generate_voice_embedding(employee_data, combined_audio_data)
 
-        # Define o caminho do Firestore e salva os dados do colaborador
-        firestore_path = f"regions/{self.supermarket_config['region']}/states/{self.supermarket_config['state']}/cities/{self.supermarket_config['city'].replace(' ', '_').lower()}/supermarkets/{self.supermarket_id}/employees"
+        supermarket_name = self.supermarket_config.get("name", "supermarket").replace(" ", "_").lower()
+        service_company = employee_data.get("service_company", "unknown").replace(" ", "_").lower()
 
+        firestore_path = (
+            f"regions/{self.supermarket_config['region']}/"
+            f"states/{self.supermarket_config['state']}/"
+            f"cities/{self.supermarket_config['city'].replace(' ', '_').lower()}/"
+            f"supermarkets/{supermarket_name}/{self.supermarket_id}/employees/{service_company}"
+        )
+
+        # Definir o document_id como o número do documento
         if document_number:
-            self.firestore_ops.upsert_employee(employee_data, document_id=document_number, firestore_path=firestore_path)
-            self.logger.info(f"Aurora: Cadastro concluído e enviado ao Firestore no caminho {firestore_path}/{document_number}")
+            document_id = document_number
+            full_firestore_path = f"{firestore_path}/{document_id}"
+            self.logger.debug(f"Firestore Path (final): {full_firestore_path}")
+            self.firestore_ops.upsert_employee(employee_data, document_id=document_id, firestore_path=firestore_path)
         else:
-            self.logger.error("Aurora: Não foi possível registrar o colaborador, número de documento não fornecido.")
+            self.logger.error("Documento não fornecido, não é possível registrar o colaborador.")
+
 
     def _collect_shift_data(self, attributes):
         """Coleta e processa os dados de turno (shift) do colaborador."""
-        shift_data = {"week": "5"}
-        self.logger.info(self.responses["ask_shift_start"])
-        start_response, _ = self._ask_and_repeat("shift_start", attributes['fields']['start'])
+        shift_data = {}
 
-        if start_response and start_response.isdigit():
-            shift_data['start'] = start_response
-        else:
-            shift_data['start'] = attributes['fields']['start']['default']
+        # Pergunta o horário de entrada
+        self.logger.info(self.responses.get("ask_shift_start", "Por favor, informe o horário de entrada."))
+        start_response, _ = self._ask_and_repeat("shift_start", attributes["fields"]["start"])
+        shift_data["start"] = start_response if start_response else attributes["fields"]["start"]["default"]
 
-        self.logger.info(self.responses["ask_shift_end"])
-        end_response, _ = self._ask_and_repeat("shift_end", attributes['fields']['end'])
+        # Pergunta o horário de saída
+        self.logger.info(self.responses.get("ask_shift_end", "Por favor, informe o horário de saída."))
+        end_response, _ = self._ask_and_repeat("shift_end", attributes["fields"]["end"])
+        shift_data["end"] = end_response if end_response else attributes["fields"]["end"]["default"]
 
-        if end_response and end_response.isdigit():
-            shift_data['end'] = end_response
-        else:
-            shift_data['end'] = attributes['fields']['end']['default']
-
-        self.logger.info(self.responses["ask_weekend"])
-        weekend_response, _ = self._ask_and_repeat("weekend", attributes)
-
-        if weekend_response:
-            shift_data['weekend'] = weekend_response.lower() in ["sim", "yes", "true"]
-        else:
-            self.logger.warning("Não foi possível registrar resposta sobre finais de semana.")
+        # Pergunta sobre finais de semana
+        self.logger.info(self.responses.get("ask_weekend", "Você trabalha nos finais de semana? (sim/não)"))
+        weekend_response, _ = self._ask_and_repeat("weekend", attributes["fields"]["weekend"])
+        shift_data["weekend"] = weekend_response.lower() in ["sim", "yes", "true"] if weekend_response else False
 
         return shift_data
+
 
     def _ask_and_repeat(self, field, attributes, max_attempts=3):
         """Pergunta e, em caso de erro, repete a pergunta até `max_attempts` vezes."""

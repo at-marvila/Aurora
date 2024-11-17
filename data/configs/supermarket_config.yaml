@@ -1,8 +1,8 @@
   supermarket:
-    name: "BOURBON"
+    name: "Angeloni"
     region: "south"
-    state: "RS"
-    city: "Porto Alegre"
+    state: "SC"
+    city: "Florianopolis"
     district: "Centro"
     store_number: "001"
     
@@ -13,6 +13,7 @@
         "Rio de Janeiro": "RJ"
         "São Paulo": "SP"
         "Joinville": "JOI"
+        "Florianopolis": "FLN"
       district:
         "Bela Vista": "BV"
         "Centro": "CTR"

@@ -39,20 +39,25 @@ class ConfigManager:
                 logging.error("Erro: Configuração 'supermarket' está ausente no arquivo.")
                 return None
 
-            name = supermarket.get('name')
+            # Extrai as informações do supermercado
+            name = supermarket.get('name')  # Nome do supermercado
             region = supermarket.get('region', 'default_region')
             state = supermarket.get('state', 'default_state')
             city = supermarket.get('city', 'default_city')
             district = supermarket.get('district', 'default_district')
             store_number = supermarket.get('store_number', '000')
+
+            # Usa os acrônimos definidos no YAML
             city_acronym = supermarket.get('acronyms', {}).get('city', {}).get(city, city[:3].upper())
             district_acronym = supermarket.get('acronyms', {}).get('district', {}).get(district, district[:3].upper())
-            identifier_format = supermarket.get('identifier_format')
 
+            # Formato do identificador do supermercado
+            identifier_format = supermarket.get('identifier_format')
             if not identifier_format:
                 logging.error("Erro: 'identifier_format' está ausente na configuração do supermercado.")
                 return None
 
+            # Cria o identificador do supermercado com o formato definido
             supermarket_id = identifier_format.format(
                 name=name,
                 state=state,
@@ -61,7 +66,9 @@ class ConfigManager:
                 store_number=store_number
             )
 
-            return f"regions:{region}:states:{state}:cities:{city}:supermarkets:{supermarket_id}"
+            # Gera a chave completa com o nome e o identificador
+            supermarket_segment = name.replace(" ", "_").lower()  # Normaliza o nome para ser usado na chave
+            return f"regions:{region}:states:{state}:cities:{city}:supermarkets:{supermarket_segment}:{supermarket_id}"
 
         except KeyError as e:
             logging.error(f"Erro ao gerar a chave do supermercado: chave faltando '{e.args[0]}'")
