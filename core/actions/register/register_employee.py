@@ -7,6 +7,7 @@ from utils.helpers.general_helpers import generate_supermarket_id, get_default_e
 from utils.audio.voice_recognition import VoiceRecognition
 from utils.audio.audio_utils import listen_and_save
 from validators.validators import Validator
+from utils.session.session_logger import SessionLogger
 from typing import Optional
 import time
 from datetime import datetime
@@ -49,16 +50,20 @@ class RegisterEmployee:
             self.aurora.voice_recognition = VoiceRecognition()
 
         self.user_name = None  # Para armazenar o nome do usuário ao longo da interação
+        self.session_logger = SessionLogger(
+            supermarket_config=self.supermarket_config,
+            action_name="register_employee",
+        )
 
     def register_employee(self) -> None:
-        logging.info("=" * 50)
-        logging.info("=== Iniciando Registro de Colaborador ===")
+        """Inicia o processo de registro de colaborador."""
+        self.session_logger.start_session()
+        self.session_logger.log_event("=== Iniciando Registro de Colaborador ===")
         employee_data = get_default_employee_data(self.supermarket_id)
         combined_audio_data = []
 
         document_number = None
 
-        # Itera sobre os campos definidos
         for field, attributes in self.parameters["collaborator_registration"]["fields"].items():
             if field in [
                 "id", "register_date", "modification_date", "active", "notification",
@@ -74,16 +79,15 @@ class RegisterEmployee:
                     self.user_name = value.split()[0]  # Usa apenas o primeiro nome
                 if field == "document":
                     try:
-                        document_number = Validator.validate_document(value)
+                        document_number = self._validate_field(field, value)
                     except ValueError:
-                        logging.error(self.responses["fields"]["invalid_cpf"].format(input=value))
+                        self.session_logger.log_error(field, self.responses["fields"]["invalid_cpf"].format(input=value))
                         continue
                 if audio:
                     combined_audio_data.append(audio.get_wav_data())
             else:
-                logging.warning(self.responses["general"]["field_not_filled"].format(field=attributes["label"]))
+                self.session_logger.log_event(self.responses["general"]["field_not_filled"].format(field=attributes["label"]))
 
-        # Finaliza interação
         self._finalize_interaction(employee_data)
 
     def _process_field(self, field, attributes):
@@ -96,29 +100,27 @@ class RegisterEmployee:
             prompt = self.responses["fields"].get(f"ask_{field}", f"Por favor, forneça {attributes['label']}.")
             if self.user_name:
                 prompt = f"{self.user_name}, {prompt}"
-            logging.info(prompt)
+            self.session_logger.log_event(prompt)
 
             response, audio = listen_and_save(self.aurora.voice_recognition.recognizer)
 
             if response:  # Validação
                 try:
                     validated_value = self._validate_field(field, response)
-                    logging.info(self.responses["success"]["field_captured"].format(field=attributes["label"]))
+                    self.session_logger.log_event(
+                        self.responses["success"]["field_captured"].format(field=attributes["label"])
+                    )
                     return validated_value, audio
                 except ValueError as e:
-                    logging.error(f"Erro ao validar o campo {field}: {e}")
-                    logging.info(
-                        self.responses["fields"].get(
-                            f"invalid_{field}",
-                            f"A informação fornecida ({response}) está incorreta."
-                        ).format(input=response)
-                    )
+                    self.logger.error(f"Erro ao validar o campo {field}: {e}")
+                    self.session_logger.log_error(field, f"A informação fornecida ({response}) está incorreta.")
             else:  # Falha na interpretação
-                logging.warning(self.responses["general"]["not_understood"])
+                self.session_logger.log_event(self.responses["general"]["not_understood"])
 
-            # Espera 3 segundos antes de tentar novamente
             time.sleep(3)
-            logging.warning(self.responses["general"]["retry_in_progress"].format(attempt=attempt, max_attempts=max_attempts))
+            self.session_logger.log_event(
+                self.responses["general"]["retry_in_progress"].format(attempt=attempt, max_attempts=max_attempts)
+            )
 
         # Exibe mensagem final após falha
         self._finalize_with_error(field)
@@ -137,20 +139,14 @@ class RegisterEmployee:
 
     def _finalize_with_error(self, field):
         """Finaliza a interação após falhas."""
-        location = f"{self.supermarket_config['city']}, {self.supermarket_config['state']}"
-        session_info = (
-            f"Sessão concluída.\n"
-            f"Data: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n"
-            f"Local: {location}\n"
-            f"Supermercado: {self.supermarket_config['name']}\n"
-            f"Erro no campo: {field}. Máximo de tentativas excedido."
-        )
         final_message = self.responses["general"]["final_message"].format(name=self.user_name or "usuário")
-        logging.info(f"{final_message}\n{session_info}")
-        logging.info("=" * 50)  # Delimita visualmente a conclusão da sessão
+        self.session_logger.end_session(
+            status="Erro",
+            error_details=f"Erro no campo: {field}. Máximo de tentativas excedido.",
+        )
         raise ValueError(f"Máximo de tentativas para o campo {field} excedido.")
 
     def _finalize_interaction(self, employee_data):
         """Finaliza a interação."""
-        logging.info(self.responses["success"]["registration_complete"])
-        logging.info("=" * 50)  # Delimita visualmente a conclusão da sessão
+        self.session_logger.end_session(status="Sucesso")
+        self.session_logger.log_event(self.responses["success"]["registration_complete"])

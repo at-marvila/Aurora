@@ -23,11 +23,10 @@ class InteractionHandler:
                     time.sleep(3)  # Intervalo antes de verificar novamente
 
                 # Captura áudio do microfone e tenta reconhecer
-                recognized_text, audio = listen_and_save(self.recognizer, prompt="Você: ")
+                recognized_text, audio = listen_and_save(self.recognizer)
 
                 if recognized_text:
-                    logging.info(f"Você: {recognized_text}")
-
+                    # Apenas executa o comando sem duplicar o log
                     if "oi aurora" in recognized_text.lower():
                         self.awaiting_interaction = False
                         logging.info("Aurora: Olá! Como posso ajudar?")
@@ -37,7 +36,6 @@ class InteractionHandler:
                     else:
                         logging.warning("Aurora está aguardando 'Oi Aurora' para continuar.")
                 else:
-                    # Caso nenhum texto seja reconhecido, mantém no estado de interação
                     logging.warning("Aurora: Não consegui entender o que você disse.")
 
             except sr.WaitTimeoutError:

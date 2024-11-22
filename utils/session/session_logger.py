@@ -4,74 +4,51 @@ from datetime import datetime
 
 
 class SessionLogger:
-    """Classe centralizada para gerenciamento de sessões e logs."""
-
-    def __init__(self, action_name, supermarket_config, user_name=None):
-        self.action_name = action_name
+    def __init__(self, supermarket_config, action_name):
         self.supermarket_config = supermarket_config
-        self.user_name = user_name
+        self.action_name = action_name
+        self.start_time = None
+        self.end_time = None
+        self.status = None
+        self.error_details = None
+
+    def start_session(self):
+        """Inicia uma nova sessão."""
         self.start_time = datetime.now()
+        location = f"{self.supermarket_config['city']}, {self.supermarket_config['state']} - {self.supermarket_config['name']}"
+        logging.info(f"[{self.start_time.strftime('%H:%M:%S')}] === Nova Sessão Iniciada ===\n"
+                     f"Ação: {self.action_name}\n"
+                     f"Local: {location}\n"
+                     f"Data: {self.start_time.strftime('%d/%m/%Y %H:%M:%S')}\n"
+                     f"{'='*50}")
 
-        # Informações fixas do local
-        self.location = f"{supermarket_config['city']}, {supermarket_config['state']}"
-        self.supermarket_name = supermarket_config["name"]
+    def log_event(self, message):
+        """Registra um evento no log da sessão."""
+        current_time = datetime.now().strftime('%H:%M:%S')
+        logging.info(f"[{current_time}] {message}")
 
-    def log_session_start(self):
-        """Loga o início da sessão."""
-        start_message = (
-            f"\n{'=' * 50}"
-            f"\n### Início da Sessão ###"
-            f"\nAção: {self.action_name}"
-            f"\nData: {self.start_time.strftime('%d/%m/%Y %H:%M:%S')}"
-            f"\nLocal: {self.location}"
-            f"\nSupermercado: {self.supermarket_name}"
-            f"\n{'=' * 50}"
-        )
-        logging.info(start_message)
+    def log_error(self, field, message):
+        """Registra um erro específico relacionado a um campo."""
+        current_time = datetime.now().strftime('%H:%M:%S')
+        logging.info(f"[{current_time}] Erro no campo '{field}': {message}")
 
-    def log_session_end(self, success=True, error_field=None, reason=None):
-        """Loga o final da sessão."""
-        end_time = datetime.now()
-        duration = (end_time - self.start_time).total_seconds()
-        status = "Sucesso" if success else "Erro"
-        reason_message = reason or ("Máximo de tentativas excedido." if not success else "Operação concluída.")
+    def end_session(self, status, error_details=None):
+        """Finaliza a sessão e registra o resumo."""
+        self.end_time = datetime.now()
+        self.status = status
+        self.error_details = error_details
+        duration = (self.end_time - self.start_time).total_seconds()
 
-        # Mensagem human-readable
-        end_message = (
-            f"\n{'=' * 50}"
-            f"\n### Fim da Sessão ###"
-            f"\nAção: {self.action_name}"
-            f"\nUsuário: {self.user_name or 'N/A'}"
-            f"\nData: {end_time.strftime('%d/%m/%Y %H:%M:%S')}"
-            f"\nLocal: {self.location}"
-            f"\nSupermercado: {self.supermarket_name}"
-            f"\nDuração: {duration:.2f} segundos"
-            f"\nStatus: {status}"
-            f"\nMotivo: {reason_message}"
-            f"\nCampo com erro: {error_field or 'Nenhum'}"
-            f"\n{'=' * 50}"
-        )
-        logging.info(end_message)
-
-        # Log JSON estruturado (para análise futura ou sistemas de monitoramento)
-        log_data = {
+        session_summary = {
             "action": self.action_name,
-            "user": self.user_name or "N/A",
-            "timestamp": end_time.isoformat(),
-            "location": self.location,
-            "supermarket": self.supermarket_name,
-            "duration_seconds": duration,
-            "status": status,
-            "error_field": error_field,
-            "reason": reason_message,
+            "status": self.status,
+            "location": f"{self.supermarket_config['city']}, {self.supermarket_config['state']} - {self.supermarket_config['name']}",
+            "start_time": self.start_time.strftime('%d/%m/%Y %H:%M:%S'),
+            "end_time": self.end_time.strftime('%d/%m/%Y %H:%M:%S'),
+            "duration": f"{duration:.2f} segundos",
+            "error_details": self.error_details if self.error_details else "Nenhum",
         }
-        logging.info(f"LOG_JSON: {json.dumps(log_data)}")
 
-    def log_event(self, message, level="info"):
-        """Loga um evento genérico durante a sessão."""
-        log_methods = {
-            "info": logging.info,
-            "warning": logging.warning,
-            "error": logging.error,
-        }
-        log_methods.get(level, logging.info)(message)
+        # Log em formato JSON
+        logging.info(f"[{self.end_time.strftime('%H:%M:%S')}] Sessão Concluída: {json.dumps(session_summary, indent=4, ensure_ascii=False)}")
+        logging.info(f"[{self.end_time.strftime('%H:%M:%S')}] {'='*50}")
