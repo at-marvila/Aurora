@@ -1,0 +1,181 @@
+
+fornecedores:
+  - nome: "Seara"
+    id: "seara"
+    categoria: "Carnes"
+    produtos: ["Frangos", "Carnes", "Congelados"]
+    região: "Brasil"
+
+  - nome: "Perdigão"
+    id: "perdigao"
+    categoria: "Carnes"
+    produtos: ["Frangos", "Carnes", "Embutidos"]
+    região: "Brasil"
+
+  - nome: "Sadia"
+    id: "sadia"
+    categoria: "Carnes"
+    produtos: ["Frangos", "Carnes", "Congelados"]
+    região: "Brasil"
+
+  - nome: "Aurora"
+    id: "aurora"
+    categoria: "Laticínios"
+    produtos: ["Frangos", "Carnes", "Lácteos"]
+    região: "Brasil"
+
+  - nome: "Friboi"
+    id: "friboi"
+    categoria: "Carnes"
+    produtos: ["Carnes"]
+    região: "Brasil"
+
+  - nome: "JBS"
+    id: "jbs"
+    categoria: "Carnes"
+    produtos: ["Carnes", "Processados"]
+    região: "Global"
+
+  - nome: "BRF"
+    id: "brf"
+    categoria: "Carnes"
+    produtos: ["Carnes", "Congelados", "Frangos"]
+    região: "Global"
+
+  - nome: "Nissin"
+    id: "nissin"
+    categoria: "Alimentos Embalados"
+    produtos: ["Macarrão Instantâneo"]
+    região: "Global"
+
+  - nome: "Três Corações"
+    id: "tres_coracoes"
+    categoria: "Bebidas"
+    produtos: ["Cafés", "Cápsulas", "Bebidas Quentes"]
+    região: "Brasil"
+
+  - nome: "Coca-Cola"
+    id: "coca_cola"
+    categoria: "Bebidas"
+    produtos: ["Refrigerantes", "Águas", "Sucos"]
+    região: "Global"
+
+  - nome: "Ambev"
+    id: "ambev"
+    categoria: "Bebidas"
+    produtos: ["Cervejas", "Refrigerantes", "Águas"]
+    região: "América Latina"
+
+  - nome: "Nestlé"
+    id: "nestle"
+    categoria: "Laticínios"
+    produtos: ["Chocolates", "Lácteos", "Infantis"]
+    região: "Global"
+
+  - nome: "Danone"
+    id: "danone"
+    categoria: "Laticínios"
+    produtos: ["Lácteos", "Água", "Infantis"]
+    região: "Global"
+
+  - nome: "Unilever"
+    id: "unilever"
+    categoria: "Produtos de Casa"
+    produtos: ["Limpeza", "Processados", "Higiene"]
+    região: "Global"
+
+  - nome: "P&G"
+    id: "p_g"
+    categoria: "Produtos de Casa"
+    produtos: ["Limpeza", "Higiene"]
+    região: "Global"
+
+  - nome: "Barilla"
+    id: "barilla"
+    categoria: "Massas"
+    produtos: ["Massas", "Molhos"]
+    região: "Global"
+
+  - nome: "Heinz"
+    id: "heinz"
+    categoria: "Condimentos"
+    produtos: ["Molhos", "Ketchup", "Condimentos"]
+    região: "Global"
+
+  - nome: "Camil"
+    id: "camil"
+    categoria: "Grãos"
+    produtos: ["Arroz", "Feijão", "Grãos"]
+    região: "América Latina"
+
+  - nome: "Yoki"
+    id: "yoki"
+    categoria: "Lanches"
+    produtos: ["Snacks", "Temperos", "Farofas"]
+    região: "Brasil"
+
+  - nome: "Bauducco"
+    id: "bauducco"
+    categoria: "Padaria"
+    produtos: ["Biscoitos", "Pães", "Panettones"]
+    região: "Global"
+
+  - nome: "Mondelez"
+    id: "mondelez"
+    categoria: "Lanches"
+    produtos: ["Chocolates", "Snacks", "Biscoitos"]
+    região: "Global"
+
+  - nome: "Kellogg's"
+    id: "kelloggs"
+    categoria: "Cereais"
+    produtos: ["Cereais", "Barras de Cereal"]
+    região: "Global"
+
+  - nome: "PepsiCo"
+    id: "pepsico"
+    categoria: "Lanches/Bebidas"
+    produtos: ["Refrigerantes", "Snacks"]
+    região: "Global"
+
+  - nome: "Kraft Heinz"
+    id: "kraft_heinz"
+    categoria: "Condimentos"
+    produtos: ["Molhos", "Condimentos"]
+    região: "Global"
+
+  - nome: "Ajinomoto"
+    id: "ajinomoto"
+    categoria: "Temperos"
+    produtos: ["Temperos", "Sopas", "Caldos"]
+    região: "Global"
+
+  - nome: "Arcor"
+    id: "arcor"
+    categoria: "Doces"
+    produtos: ["Balas", "Chocolates", "Biscoitos"]
+    região: "Global"
+
+  - nome: "Itambé"
+    id: "itambe"
+    categoria: "Laticínios"
+    produtos: ["Leites", "Queijos", "Iogurtes"]
+    região: "Brasil"
+
+  - nome: "Polenghi"
+    id: "polenghi"
+    categoria: "Laticínios"
+    produtos: ["Queijos", "Lácteos"]
+    região: "Brasil"
+
+  - nome: "Vigor"
+    id: "vigor"
+    categoria: "Laticínios"
+    produtos: ["Queijos", "Iogurtes"]
+    região: "Brasil"
+
+  - nome: "Adria"
+    id: "adria"
+    categoria: "Massas"
+    produtos: ["Massas", "Biscoitos"]
+    região: "Brasil"

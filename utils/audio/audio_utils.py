@@ -1,10 +1,11 @@
-# core/utils/audio_utils.py
+# core/utils/audio/audio_utils.py
+
 import speech_recognition as sr
 import wave
 import logging
 
 def save_audio_wav(audio_data, file_path):
-    """Salva o áudio combinado em formato WAV"""
+    """Salva o áudio combinado em formato WAV."""
     try:
         with wave.open(file_path, "wb") as wav_file:
             wav_file.setnchannels(1)
@@ -16,26 +17,29 @@ def save_audio_wav(audio_data, file_path):
         logging.error(f"Erro ao salvar o áudio: {e}")
 
 def listen_and_save(recognizer, prompt="Você: "):
-    """Captura áudio e o reconhece usando o Google Speech Recognition sem argumentos adicionais."""
+    """Captura áudio e o reconhece usando o Google Speech Recognition."""
     with sr.Microphone() as source:
         print(prompt)
         try:
             recognizer.adjust_for_ambient_noise(source)
-            audio = recognizer.listen(source)
-            if audio is None:
-                logging.error("Erro de áudio: Nenhum áudio foi capturado.")
+            audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+
+            if not audio:
+                logging.warning("Nenhum áudio foi capturado.")
                 return None, None
-            
+
             recognized_text = recognizer.recognize_google(audio, language="pt-BR")
-            # Remova qualquer log duplicado aqui
-            #logging.info(f"Você: {recognized_text}")  # Deve aparecer apenas uma vez
+            logging.info(f"{prompt}{recognized_text}")
             return recognized_text, audio
+
         except sr.WaitTimeoutError:
             logging.warning("Tempo esgotado ao aguardar áudio.")
             return None, None
+
         except sr.UnknownValueError:
             logging.warning("O áudio não pôde ser interpretado.")
             return None, None
+
         except Exception as e:
             logging.error(f"Erro inesperado de áudio: {e}")
             return None, None
